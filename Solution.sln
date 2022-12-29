@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Userinteraction", "Userinteraction\Userinteraction.csproj", "{CE50B3E5-EDCB-470A-86C4-3E301825861F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Userfunctionlib", "Userfunctionlib\Userfunctionlib.csproj", "{9FFF0F64-76BF-4DE2-A00D-41BD566596AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Userdatalib", "Userdatalib\Userdatalib.csproj", "{92CFF38B-11D1-4026-8B1A-B7EA03F4DEE4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CE50B3E5-EDCB-470A-86C4-3E301825861F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE50B3E5-EDCB-470A-86C4-3E301825861F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE50B3E5-EDCB-470A-86C4-3E301825861F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE50B3E5-EDCB-470A-86C4-3E301825861F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FFF0F64-76BF-4DE2-A00D-41BD566596AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FFF0F64-76BF-4DE2-A00D-41BD566596AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FFF0F64-76BF-4DE2-A00D-41BD566596AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FFF0F64-76BF-4DE2-A00D-41BD566596AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92CFF38B-11D1-4026-8B1A-B7EA03F4DEE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92CFF38B-11D1-4026-8B1A-B7EA03F4DEE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92CFF38B-11D1-4026-8B1A-B7EA03F4DEE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92CFF38B-11D1-4026-8B1A-B7EA03F4DEE4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
