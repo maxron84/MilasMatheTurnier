@@ -108,13 +108,13 @@ while (true)
     {
         Console.Write(validator.GetUsertaskReport(userInput!));
         while (!Double.TryParse(Console.ReadLine(), out userEquation))
-            Console.WriteLine("# Bitte nur Zahlen mit oder ohne Nachkommastellen eingeben!");
+            Console.WriteLine("# Bitte nur Zahlen mit höchstens 2 gerundeten Nachkommastellen eingeben!");
     }
     else
     {
         goto beginOperationValidation;
     }
-    Console.WriteLine(validator.GetUserInputValidationReport(userEquation, ref equationPassed));
+    Console.WriteLine(validator.GetUserInputValidationReport(Math.Round(userEquation, 2), ref equationPassed));
     new Operator(userdataLocation, userName).SetCurrentUserScoreByUserName(userName, bonus, malus, equationPassed);
     goto beginOperationValidation;
 }

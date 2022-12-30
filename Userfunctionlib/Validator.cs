@@ -44,7 +44,7 @@ public class Validator
 
     public string GetUserInputValidationReport(double userEquation, ref bool equationPassed)
     {
-        double result = _calculator.ComputeOperationSequence_Dumb(_operations, _numbers);
+        double result = Math.Round(_calculator.ComputeOperationSequence_Dumb(_operations, _numbers), 2);
         if (userEquation != result)
         {
             equationPassed = false;
