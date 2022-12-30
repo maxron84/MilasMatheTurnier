@@ -42,7 +42,7 @@ else if (userInput == "3")
 }
 else
 {
-    Console.WriteLine("# Dein Name?");
+    Console.WriteLine("# Wie heißt du?");
 }
 while (true)
 {
@@ -52,16 +52,18 @@ while (true)
     Console.WriteLine($"# Bitte einen Namen mit einer Länge von {userNameSize.Min} bis {userNameSize.Max} Zeichen eingeben!");
 }
 
-Console.WriteLine("# Dein Alter?");
 beginAgeValidation:
-while (!Int32.TryParse(Console.ReadLine(), out userAge))
+Console.WriteLine("# Wie alt bist du?");
+userInput = Console.ReadLine();
+if (!Int32.TryParse(userInput, out userAge))
 {
-    if (Int32.TryParse(Console.ReadLine(), out userAge) && userAge < 6)
-    {
-        Console.WriteLine("# Du musst mindestens 6 Jahre alt sein!");
-        goto beginAgeValidation;
-    }
     Console.WriteLine("# Bitte nur Zahlen eingeben!");
+    goto beginAgeValidation;
+}
+if (userAge < 6)
+{
+    Console.WriteLine("# Du musst mindestens 6 Jahre alt sein!");
+    goto beginAgeValidation;
 }
 
 bonus = userSetupLookup.ContainsKey(userAge) ? userSetupLookup[userAge].bonus : bonusOpenEnd;
