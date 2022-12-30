@@ -26,17 +26,24 @@ var userEquation = 0.0;
 var equationPassed = false;
 
 beginIntroduction:
-Console.WriteLine("# Gebe 1 ein um ein neues Spiel zu beginnen, oder gebe 2 ein um die Bestenliste anzuzeigen.");
+Console.WriteLine("# Gebe 1 ein um ein neues Spiel zu beginnen, oder gebe 2 ein um die Bestenliste anzuzeigen. Gebe 3 ein, um die Konsole aufzuräumen.");
 userInput = Console.ReadLine()!;
-if (userInput != "1" && userInput != "2")
+if (userInput != "1" && userInput != "2" && userInput != "3")
     goto beginIntroduction;
 if (userInput == "2")
 {
     Console.Write(new Operator(userdataLocation, userName).GetAllUsersUserNameUserScore());
     goto beginIntroduction;
 }
+else if (userInput == "3")
+{
+    Console.Clear();
+    goto beginIntroduction;
+}
 else
+{
     Console.WriteLine("# Dein Name?");
+}
 while (true)
 {
     userName = Console.ReadLine();
