@@ -4,10 +4,10 @@ namespace Userfunctionlib;
 
 public class Calculator<T> where T : INumber<T>
 {
-    internal Func<double, double, double> FuncAdd = (x, y) => x + y;
-    internal Func<double, double, double> FuncSub = (x, y) => x - y;
-    internal Func<double, double, double> FuncMul = (x, y) => x * y;
-    internal Func<double, double, double> FuncDiv = (x, y) => x / y;
+    public Func<T, T, T> FuncAdd { get => (x, y) => x + y; }
+    public Func<T, T, T> FuncSub { get => (x, y) => x - y; }
+    public Func<T, T, T> FuncMul { get => (x, y) => x * y; }
+    public Func<T, T, T> FuncDiv { get => (x, y) => x / y; }
 
     /// <summary>
     /// Keine Punkt-Vor-Strich Berücksichtigung, dafür werden auch andere Operationen als nur + - * / akzeptiert!
