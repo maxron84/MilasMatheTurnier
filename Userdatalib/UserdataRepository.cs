@@ -25,7 +25,7 @@ namespace Userdatalib
         // READ, GET
         public List<UserdataModel>? GetAllUsers() => _userDataModels;
 
-        public UserdataModel? GetUserByName(string name) => _userDataModels.FirstOrDefault(e => e.Name == name);
+        public UserdataModel? GetUserByName(string name) => _userDataModels.FirstOrDefault(e => e.Name == name) ?? new UserdataModel();
 
         // UPDATE, PUT
         public void UpdateUserByName(UserdataModel userdataModel)
@@ -63,7 +63,11 @@ namespace Userdatalib
             using (StreamReader file = File.OpenText(_jsonFilePath))
             {
                 var serializer = new JsonSerializer();
-                return (List<UserdataModel>)serializer.Deserialize(file, typeof(List<UserdataModel>))!;
+                var deserialized = serializer.Deserialize(file, typeof(List<UserdataModel>));
+                if (deserialized is null)
+                    return new List<UserdataModel>();
+
+                return (List<UserdataModel>)deserialized;
             }
         }
 

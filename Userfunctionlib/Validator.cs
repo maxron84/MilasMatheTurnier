@@ -32,7 +32,6 @@ public class Validator
         _ = CreateUsertaskArithmetic(userOperator);
         for (int i = 0; i < _numbers.Count() + 1; i++)
         {
-            // 48422 - 16160 44684 - 11153 = 
             if (i > 0 && i < _numbers.Count())
                 _stringBuilder.Append(userOperator + " ");
             if (i == _numbers.Count())
@@ -88,22 +87,23 @@ public class Validator
 
     private Task AddNumbersByConstraints_Bruteforce(string userOperator, int quantity, int maxValue, List<double> modulosDiv, bool canNextGreaterPrev, bool isMaxHalfDiv)
     {
-    begin:
-        while (_numbers.Count() < quantity)
+        for (int i = 0; i < quantity; i++)
         {
-            var candidate = (double)_random.Next(1, maxValue);
-            if (!canNextGreaterPrev)
-                if (_numbers.Count() > 0)
-                    if (candidate > _numbers.Last())
-                        goto begin;
-            if (userOperator == "/")
+            double candidate = (double)_random.Next(1, maxValue);
+            if (!canNextGreaterPrev && i > 0 && candidate > _numbers[i - 1])
             {
-                if (!(modulosDiv.Any(modulo => candidate % modulo == 0)))
-                    goto begin;
-                if (isMaxHalfDiv)
-                    if (_numbers.Count > 0)
-                        if (candidate > _numbers.Last() / 2)
-                            goto begin;
+                i--;
+                continue;
+            }
+            if (userOperator == "/" && !(modulosDiv.Any(modulo => candidate % modulo == 0)))
+            {
+                i--;
+                continue;
+            }
+            if (isMaxHalfDiv && i > 0 && candidate > _numbers[i - 1] / 2)
+            {
+                i--;
+                continue;
             }
             _numbers.Add(candidate);
         }

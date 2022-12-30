@@ -22,6 +22,8 @@ public class Operator
         var target = new Userdatalib.UserdataRepository(_userdataLocation).GetAllUsers()!
             .OrderByDescending(x => x.Score)
             .ToList();
+        if (target.Count() < 1)
+            return "\n# Es sind noch keine Spieler eingetragen. Beginne jetzt mit einem neuen Spiel und sei der erste!\n\n";
         _stringBuilder.Clear();
         _stringBuilder.Append("# Die besten Spieler:\n\n");
         for (int i = 0; i < target.Count(); i++)

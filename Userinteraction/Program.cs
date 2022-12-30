@@ -126,8 +126,16 @@ static string GetPlaintextPasswordByMaskedInput()
         key = Console.ReadKey(true);
         if (key.Key is ConsoleKey.Enter)
             break;
-        password.Append(key.KeyChar);
-        Console.Write("*");
+        if (key.KeyChar > 32 && key.KeyChar < 127)
+        {
+            password.Append(key.KeyChar);
+            Console.Write("*");
+        }
+        else if (key.Key is ConsoleKey.Backspace && password.Length > 0)
+        {
+            password.Remove(password.Length - 1, 1);
+            Console.Write("\b \b");
+        }
     }
 
     return password.ToString();
