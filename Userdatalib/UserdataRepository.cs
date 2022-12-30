@@ -28,7 +28,7 @@ namespace Userdatalib
         public UserdataModel? GetUserByName(string name) => _userDataModels.FirstOrDefault(e => e.Name == name) ?? new UserdataModel();
 
         // UPDATE, PUT
-        public void UpdateUserByName(UserdataModel userdataModel)
+        public Task UpdateUserByName(UserdataModel userdataModel)
         {
             var existingUserdataModel = GetUserByName(userdataModel.Name!);
             if (existingUserdataModel != null)
@@ -39,6 +39,8 @@ namespace Userdatalib
                 existingUserdataModel.Password = userdataModel.Password;
                 SaveUserdataToJsonFile();
             }
+
+            return Task.CompletedTask;
         }
 
         // DELETE, DELETE
