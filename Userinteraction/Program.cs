@@ -85,8 +85,14 @@ if (new Operator(userdataLocation, userName).IsUserAlreadyExisting(userName))
 else
 {
     var userPassword = string.Empty;
-    Console.WriteLine("# Wähle ein Passwort aus mindestens 3 Zeichen oder drücke einfach Enter wenn du kein Passwort setzen möchtest:");
-    userInput = GetPlaintextPasswordByMaskedInput();
+    while (true)
+    {
+        Console.WriteLine("# Wähle ein Passwort aus mindestens 3 Zeichen oder drücke einfach Enter wenn du kein Passwort setzen möchtest:");
+        userInput = GetPlaintextPasswordByMaskedInput();
+        if (userInput.Length > 2)
+            break;
+        Console.WriteLine("\n# Dein Passwort muss aus mindestens 3 Zeichen bestehen!");
+    }
     if (!string.IsNullOrEmpty(userInput))
         userPassword = userInput;
     _ = new Operator(userdataLocation, userName).CreateNewUser(userName, userAge, userPassword);
