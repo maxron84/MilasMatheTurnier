@@ -39,6 +39,7 @@ public class Validator
             if (i < _numbers.Count())
                 _stringBuilder.Append(_numbers[i].ToString() + " ");
         }
+
         return _stringBuilder.ToString();
     }
 
@@ -51,6 +52,7 @@ public class Validator
             return $"Dein Ergebnis ist leider falsch! :( Richtig wäre: {result}";
         }
         equationPassed = true;
+        
         return "Dein Ergebnis ist richtig! :)";
     }
 

@@ -40,12 +40,14 @@ public class Operator
     public bool IsUserAlreadyExisting(string userName)
     {
         var target = GetUserdataModelByUserName(userName);
+
         return target.Name != null;
     }
 
     public int GetUserScoreByUserName(string userName)
     {
         var target = GetUserdataModelByUserName(userName.ToLower());
+
         return target.Name != null ? target.Score : -1;
     }
 
@@ -69,12 +71,14 @@ public class Operator
     public string? GetUserPassword(string userName)
     {
         var target = GetUserdataModelByUserName(userName.ToLower());
+
         return target.Password;
     }
 
     public Task CreateNewUser(string userName, int userAge, string userPassword)
     {
         _ = new Userdatalib.UserdataRepository(_userdataLocation).CreateUser(new UserdataModel() { Name = userName.ToLower(), Age = userAge, Score = 0, Password = userPassword });
+
         return Task.CompletedTask;
     }
 

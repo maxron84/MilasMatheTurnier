@@ -20,6 +20,7 @@ public record UserdataModel
         {
             if (string.IsNullOrEmpty(_password))
                 return string.Empty;
+
             return _password;
         }
         set
