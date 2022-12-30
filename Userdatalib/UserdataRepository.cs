@@ -30,7 +30,8 @@ namespace Userdatalib
         // UPDATE, PUT
         public Task UpdateUserByName(UserdataModel userdataModel)
         {
-            var existingUserdataModel = GetUserByName(userdataModel.Name!);
+            var targetName = userdataModel.Name ?? "User nicht gefunden!";
+            var existingUserdataModel = GetUserByName(targetName);
             if (existingUserdataModel != null)
             {
                 existingUserdataModel.Name = userdataModel.Name;
