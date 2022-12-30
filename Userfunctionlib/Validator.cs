@@ -48,10 +48,10 @@ public class Validator
         if (userEquation != result)
         {
             equationPassed = false;
-            return "Das Ergebnis ist leider falsch! :(";
+            return $"Dein Ergebnis ist leider falsch! :( " + "Richtig wäre: {result}";
         }
         equationPassed = true;
-        return "Das Ergebnis ist richtig! :)";
+        return "Dein Ergebnis ist richtig! :)";
     }
 
     private Task CreateUsertaskArithmetic(string userOperator)
@@ -90,17 +90,9 @@ public class Validator
         for (int i = 0; i < quantity; i++)
         {
             double candidate = (double)_random.Next(1, maxValue);
-            if (!canNextGreaterPrev && i > 0 && candidate > _numbers[i - 1])
-            {
-                i--;
-                continue;
-            }
-            if (userOperator == "/" && !(modulosDiv.Any(modulo => candidate % modulo == 0)))
-            {
-                i--;
-                continue;
-            }
-            if (isMaxHalfDiv && i > 0 && candidate > _numbers[i - 1] / 2)
+            if ((!canNextGreaterPrev && i > 0 && candidate > _numbers[i - 1])
+                | (userOperator == "/" && !(modulosDiv.Any(modulo => candidate % modulo == 0)))
+                | (isMaxHalfDiv && i > 0 && candidate > _numbers[i - 1] / 2))
             {
                 i--;
                 continue;

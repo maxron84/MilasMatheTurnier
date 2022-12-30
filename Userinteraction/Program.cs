@@ -74,11 +74,11 @@ if (new Operator(userdataLocation, userName).IsUserAlreadyExisting(userName))
     {
         Console.WriteLine("# Bitte gebe dein Passwort ein:");
         while (GetPlaintextPasswordByMaskedInput() != targetPassword)
-            Console.WriteLine("# Das eingegebene Passwort ist falsch!");
+            Console.WriteLine("\n# Das eingegebene Passwort ist falsch!");
     }
     _ = new Operator(userdataLocation, userName).UpdateUserAgeByUserName(userName, userAge);
     userScore = new Operator(userdataLocation, userName).GetUserScoreByUserName(userName);
-    Console.WriteLine($"# Willkommen zurück, {userName}! Dein aktueller Punktestand lautet: {userScore}");
+    Console.WriteLine($"\n# Willkommen zurück, {userName}! Dein aktueller Punktestand lautet: {userScore}");
 }
 else
 {
