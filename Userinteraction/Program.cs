@@ -26,7 +26,7 @@ var userEquation = 0.0;
 var equationPassed = false;
 
 beginIntroduction:
-Console.WriteLine("# Gebe 1 ein um ein neues Spiel zu beginnen, oder gebe 2 ein um die Bestenliste anzuzeigen. Gebe 3 ein, um die Konsole aufzuräumen.");
+Console.WriteLine("# Gebe eine der folgenden Ziffern ein:\n\n# 1: Neues Spiel beginnen\n# 2: Bestenliste anzeigen\n# 3: Konsole aufräumen\n");
 userInput = Console.ReadLine()!;
 if (userInput != "1" && userInput != "2" && userInput != "3")
     goto beginIntroduction;
