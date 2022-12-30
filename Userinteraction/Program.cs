@@ -90,7 +90,7 @@ else
     if (!string.IsNullOrEmpty(userInput))
         userPassword = userInput;
     _ = new Operator(userdataLocation, userName).CreateNewUser(userName, userAge, userPassword);
-    Console.WriteLine($"# Willkommen, {userName}! Du bist also {userAge} Jahre alt und beginnst daher mit dem Schwierigkeitsgrad {malus}. Viel Spaß!");
+    Console.WriteLine($"\n# Willkommen, {userName}! Du bist also {userAge} Jahre alt und beginnst daher mit dem Schwierigkeitsgrad {malus}. Viel Spaß!");
 }
 
 beginOperationValidation:
