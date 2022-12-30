@@ -48,7 +48,7 @@ public class Validator
         if (userEquation != result)
         {
             equationPassed = false;
-            return $"Dein Ergebnis ist leider falsch! :( " + "Richtig wäre: {result}";
+            return $"Dein Ergebnis ist leider falsch! :( Richtig wäre: {result}";
         }
         equationPassed = true;
         return "Dein Ergebnis ist richtig! :)";
