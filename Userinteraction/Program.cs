@@ -74,9 +74,13 @@ if (new Operator(userdataLocation, userName).IsUserAlreadyExisting(userName))
     var targetPassword = new Operator(userdataLocation, userName).GetUserPassword(userName);
     if (!string.IsNullOrEmpty(targetPassword))
     {
+    beginPasswordInputPrompt:
         Console.WriteLine("# Bitte gebe dein Passwort ein:");
-        while (GetPlaintextPasswordByMaskedInput() != targetPassword)
+        if (GetPlaintextPasswordByMaskedInput() != targetPassword)
+        {
             Console.WriteLine("\n# Das eingegebene Passwort ist falsch!");
+            goto beginPasswordInputPrompt;
+        }
     }
     _ = new Operator(userdataLocation, userName).UpdateUserAgeByUserName(userName, userAge);
     userScore = new Operator(userdataLocation, userName).GetUserScoreByUserName(userName);
