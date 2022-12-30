@@ -56,10 +56,7 @@ public class Operator
         var target = GetUserdataModelByUserName(userName.ToLower());
         if (target.Name != null)
         {
-            if (equationPassed)
-                target.Score += bonus;
-            else
-                target.Score -= malus;
+            target.Score += equationPassed ? bonus : -malus;
             if (target.Score < 0)
                 target.Score = 0;
         }
