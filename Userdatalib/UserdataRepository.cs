@@ -10,68 +10,82 @@ namespace Userdatalib
         public UserdataRepository(string jsonFilePath)
         {
             _jsonFilePath = jsonFilePath;
-            _userDataModels = LoadUserdataFromJsonFile();
+            _userDataModels = LoadUserdataFromJsonFileAsync().Result;
         }
 
         // CREATE, POST
-        public Task CreateUser(UserdataModel userdataModel)
+        public async Task CreateUserAsync(UserdataModel userdataModel)
         {
             _userDataModels.Add(userdataModel);
-            _ = SaveUserdataToJsonFile();
-
-            return Task.CompletedTask;
+            await SaveUserdataToJsonFile();
         }
 
         // READ, GET
-        public List<UserdataModel>? GetAllUsers() => _userDataModels;
+        public Task<List<UserdataModel>> GetAllUsers()
+        {
+            return Task.Run(() =>
+            {
+                return _userDataModels;
+            });
+        }
 
-        public UserdataModel? GetUserByName(string name) => _userDataModels.FirstOrDefault(e => e.Name == name) ?? new UserdataModel();
+        public Task<UserdataModel?>? GetUserByName(string name)
+        {
+            return Task.Run(() =>
+            {
+                return _userDataModels.Any(e => e.Name == name) ? _userDataModels.FirstOrDefault(e => e.Name == name) : null;
+            });
+        }
 
         // UPDATE, PUT
-        public Task UpdateUserByName(UserdataModel userdataModel)
+        public async Task UpdateUserByNameAsync(UserdataModel userdataModel)
         {
-            var targetName = userdataModel.Name ?? "User nicht gefunden!";
-            var existingUserdataModel = GetUserByName(targetName);
+            var targetName = userdataModel.Name ?? string.Empty;
+            var existingUserdataModel = await GetUserByName(targetName)!;
             if (existingUserdataModel != null)
             {
                 existingUserdataModel.Name = userdataModel.Name;
                 existingUserdataModel.Age = userdataModel.Age;
                 existingUserdataModel.Score = userdataModel.Score;
                 existingUserdataModel.Password = userdataModel.Password;
-                SaveUserdataToJsonFile();
+                await SaveUserdataToJsonFile();
             }
-
-            return Task.CompletedTask;
         }
 
         // DELETE, DELETE
-        public Task DeleteUserByName(string name)
+        public async Task DeleteUserByNameAsync(string name)
         {
-            var userdataModel = GetUserByName(name);
+            var userdataModel = await GetUserByName(name)!;
             if (userdataModel != null)
             {
                 _userDataModels.Remove(userdataModel);
-                SaveUserdataToJsonFile();
+                await SaveUserdataToJsonFile();
             }
-
-            return Task.CompletedTask;
         }
 
         // JSON HELPER
-        private List<UserdataModel> LoadUserdataFromJsonFile()
+
+        private async Task<List<UserdataModel>> LoadUserdataFromJsonFileAsync()
         {
             if (!File.Exists(_jsonFilePath))
                 throw new FileNotFoundException();
 
             using (StreamReader file = File.OpenText(_jsonFilePath))
             {
-                var serializer = new JsonSerializer();
-                var deserialized = serializer.Deserialize(file, typeof(List<UserdataModel>));
+                var deserialized = await GetDeserializedJson(file);
                 if (deserialized is null)
                     return new List<UserdataModel>();
 
                 return (List<UserdataModel>)deserialized;
             }
+        }
+
+        private Task<object?> GetDeserializedJson(StreamReader file)
+        {
+            return Task.Run(() =>
+            {
+                return new JsonSerializer().Deserialize(file, typeof(List<UserdataModel>));
+            });
         }
 
         private Task SaveUserdataToJsonFile()

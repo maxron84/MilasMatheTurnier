@@ -17,9 +17,11 @@ public class Operator
     }
 
     // CONCRETE USE CASE OPERATIONS
-    public string GetAllUsersUserNameUserScore()
+    public async Task<string> GetAllUsersUserNameUserScoreAsync()
     {
-        var target = new Userdatalib.UserdataRepository(_userdataLocation).GetAllUsers()!
+        // System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1+AsyncStateMachineBox`1[System.String,Userfunctionlib.Operator+<GetAllUsersUserNameUserScore>d__4]
+        var data = await new Userdatalib.UserdataRepository(_userdataLocation).GetAllUsers();
+        var target = data
             .OrderByDescending(x => x.Score)
             .ToList();
         if (target.Count() < 1)
@@ -37,57 +39,61 @@ public class Operator
 
         return _stringBuilder.ToString();
     }
+
     public bool IsUserAlreadyExisting(string userName)
     {
-        var target = GetUserdataModelByUserName(userName);
+        var target = GetUserdataModelByUserNameAsync(userName).Result;
 
         return target.Name != null;
     }
 
     public int GetUserScoreByUserName(string userName)
     {
-        var target = GetUserdataModelByUserName(userName.ToLower());
+        var target = GetUserdataModelByUserNameAsync(userName.ToLower()).Result;
 
         return target.Name != null ? target.Score : -1;
     }
 
     public Task SetCurrentUserScoreByUserName(string userName, int bonus, int malus, bool equationPassed)
     {
-        var target = GetUserdataModelByUserName(userName.ToLower());
+        var target = GetUserdataModelByUserNameAsync(userName.ToLower()).Result;
         if (target.Name != null)
         {
             target.Score += equationPassed ? bonus : -malus;
             if (target.Score < 0)
                 target.Score = 0;
         }
-        _ = new Userdatalib.UserdataRepository(_userdataLocation).UpdateUserByName(target);
+        _ = new Userdatalib.UserdataRepository(_userdataLocation).UpdateUserByNameAsync(target);
 
         return Task.CompletedTask;
     }
 
     public string? GetUserPassword(string userName)
     {
-        var target = GetUserdataModelByUserName(userName.ToLower());
+        var target = GetUserdataModelByUserNameAsync(userName.ToLower()).Result;
 
         return target.Password;
     }
 
     public Task CreateNewUser(string userName, int userAge, string userPassword)
     {
-        _ = new Userdatalib.UserdataRepository(_userdataLocation).CreateUser(new UserdataModel() { Name = userName.ToLower(), Age = userAge, Score = 0, Password = userPassword });
+        _ = new Userdatalib.UserdataRepository(_userdataLocation).CreateUserAsync(new UserdataModel() { Name = userName.ToLower(), Age = userAge, Score = 0, Password = userPassword });
 
         return Task.CompletedTask;
     }
 
     public Task UpdateUserAgeByUserName(string userName, int userAge)
     {
-        var target = GetUserdataModelByUserName(userName.ToLower());
+        var target = GetUserdataModelByUserNameAsync(userName.ToLower()).Result;
         target.Age = userAge;
-        new Userdatalib.UserdataRepository(_userdataLocation).UpdateUserByName(target);
+        _ = new Userdatalib.UserdataRepository(_userdataLocation).UpdateUserByNameAsync(target);
 
         return Task.CompletedTask;
     }
 
     // HELPER
-    private UserdataModel GetUserdataModelByUserName(string userName) => new Userdatalib.UserdataRepository(_userdataLocation).GetUserByName(userName.ToLower()) ?? new UserdataModel();
+    private async Task<UserdataModel> GetUserdataModelByUserNameAsync(string userName)
+    {
+        return await new Userdatalib.UserdataRepository(_userdataLocation).GetUserByName(userName.ToLower())! ?? new UserdataModel();
+    }
 }

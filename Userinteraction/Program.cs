@@ -32,7 +32,7 @@ if (userInput != "1" && userInput != "2" && userInput != "3")
     goto beginIntroduction;
 if (userInput == "2")
 {
-    Console.Write(new Operator(userdataLocation, userName).GetAllUsersUserNameUserScore());
+    Console.Write(new Operator(userdataLocation, userName).GetAllUsersUserNameUserScoreAsync().Result);
     goto beginIntroduction;
 }
 else if (userInput == "3")
