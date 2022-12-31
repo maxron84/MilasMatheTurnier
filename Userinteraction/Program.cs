@@ -125,7 +125,7 @@ while (true)
         goto beginOperationValidation;
     }
     Console.WriteLine(validator.GetUserInputValidationReport(Math.Round(userEquation, 2), ref equationPassed));
-    new Operator(userdataLocation, userName).SetCurrentUserScoreByUserName(userName, bonus, malus, equationPassed);
+    _ = new Operator(userdataLocation, userName).SetCurrentUserScoreByUserName(userName, bonus, malus, equationPassed);
     goto beginOperationValidation;
 }
 
