@@ -19,7 +19,6 @@ public class Operator
     // CONCRETE USE CASE OPERATIONS
     public async Task<string> GetAllUsersUserNameUserScoreAsync()
     {
-        // System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1+AsyncStateMachineBox`1[System.String,Userfunctionlib.Operator+<GetAllUsersUserNameUserScore>d__4]
         var data = await new Userdatalib.UserdataRepository(_userdataLocation).GetAllUsers();
         var target = data
             .OrderByDescending(x => x.Score)
@@ -42,7 +41,7 @@ public class Operator
 
     public bool IsUserAlreadyExisting(string userName)
     {
-        var target = GetUserdataModelByUserNameAsync(userName).Result;
+        var target = GetUserdataModelByUserNameAsync(userName.ToLower()).Result;
 
         return target.Name != null;
     }
@@ -54,7 +53,7 @@ public class Operator
         return target.Name != null ? target.Score : -1;
     }
 
-    public Task SetCurrentUserScoreByUserName(string userName, int bonus, int malus, bool equationPassed)
+    public async Task SetCurrentUserScoreByUserName(string userName, int bonus, int malus, bool equationPassed)
     {
         var target = GetUserdataModelByUserNameAsync(userName.ToLower()).Result;
         if (target.Name != null)
@@ -63,9 +62,7 @@ public class Operator
             if (target.Score < 0)
                 target.Score = 0;
         }
-        _ = new Userdatalib.UserdataRepository(_userdataLocation).UpdateUserByNameAsync(target);
-
-        return Task.CompletedTask;
+        await new Userdatalib.UserdataRepository(_userdataLocation).UpdateUserByNameAsync(target);
     }
 
     public string? GetUserPassword(string userName)
@@ -77,7 +74,14 @@ public class Operator
 
     public Task CreateNewUser(string userName, int userAge, string userPassword)
     {
-        _ = new Userdatalib.UserdataRepository(_userdataLocation).CreateUserAsync(new UserdataModel() { Name = userName.ToLower(), Age = userAge, Score = 0, Password = userPassword });
+        _ = new Userdatalib.UserdataRepository(_userdataLocation)
+            .CreateUserAsync(new UserdataModel()
+            {
+                Name = userName.ToLower(),
+                Age = userAge,
+                Score = 0,
+                Password = userPassword
+            });
 
         return Task.CompletedTask;
     }

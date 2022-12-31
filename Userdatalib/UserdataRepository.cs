@@ -64,7 +64,6 @@ namespace Userdatalib
         }
 
         // JSON HELPER
-
         private async Task<List<UserdataModel>> LoadUserdataFromJsonFileAsync()
         {
             if (!File.Exists(_jsonFilePath))
