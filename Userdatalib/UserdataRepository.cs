@@ -17,7 +17,7 @@ namespace Userdatalib
         public async Task CreateUserAsync(UserdataModel userdataModel)
         {
             _userDataModels.Add(userdataModel);
-            await SaveUserdataToJsonFile();
+            await SaveUserdataToJsonFileAsync();
         }
 
         // READ, GET
@@ -48,7 +48,7 @@ namespace Userdatalib
                 existingUserdataModel.Age = userdataModel.Age;
                 existingUserdataModel.Score = userdataModel.Score;
                 existingUserdataModel.Password = userdataModel.Password;
-                await SaveUserdataToJsonFile();
+                await SaveUserdataToJsonFileAsync();
             }
         }
 
@@ -59,7 +59,7 @@ namespace Userdatalib
             if (userdataModel != null)
             {
                 _userDataModels.Remove(userdataModel);
-                await SaveUserdataToJsonFile();
+                await SaveUserdataToJsonFileAsync();
             }
         }
 
@@ -72,7 +72,11 @@ namespace Userdatalib
 
             using (StreamReader file = File.OpenText(_jsonFilePath))
             {
-                var deserialized = await GetDeserializedJson(file);
+                var deserialized = await Task<object?>.Run(() =>
+                {
+                    return new JsonSerializer().Deserialize(file, typeof(List<UserdataModel>));
+                });
+
                 if (deserialized is null)
                     return new List<UserdataModel>();
 
@@ -80,23 +84,15 @@ namespace Userdatalib
             }
         }
 
-        private Task<object?> GetDeserializedJson(StreamReader file)
-        {
-            return Task.Run(() =>
-            {
-                return new JsonSerializer().Deserialize(file, typeof(List<UserdataModel>));
-            });
-        }
-
-        private Task SaveUserdataToJsonFile()
+        private async Task SaveUserdataToJsonFileAsync()
         {
             using (StreamWriter file = File.CreateText(_jsonFilePath))
             {
-                var serializer = new JsonSerializer();
-                serializer.Serialize(file, _userDataModels);
+                await Task.Run(() =>
+                {
+                    new JsonSerializer().Serialize(file, _userDataModels);
+                });
             }
-
-            return Task.CompletedTask;
         }
     }
 }
