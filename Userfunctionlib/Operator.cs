@@ -20,9 +20,12 @@ public class Operator
     public async Task<string> GetAllUsersUserNameUserScoreAsync()
     {
         var data = await new Userdatalib.UserdataRepository(_userdataLocation).GetAllUsers();
-        var target = data
+        var target = await Task<List<UserdataModel>>.Run(() =>
+        {
+            return data
             .OrderByDescending(x => x.Score)
             .ToList();
+        });
         if (target.Count() < 1)
             return "\n# Es sind noch keine Spieler eingetragen. Beginne jetzt mit einem neuen Spiel und sei der erste!\n\n";
         _stringBuilder.Clear();
@@ -53,7 +56,7 @@ public class Operator
         return target.Name != null ? target.Score : -1;
     }
 
-    public async Task SetCurrentUserScoreByUserName(string userName, int bonus, int malus, bool equationPassed)
+    public async Task SetCurrentUserScoreByUserNameAsync(string userName, int bonus, int malus, bool equationPassed)
     {
         var target = GetUserdataModelByUserNameAsync(userName.ToLower()).Result;
         if (target.Name != null)
