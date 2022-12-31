@@ -17,7 +17,7 @@ namespace Userdatalib
         public Task CreateUser(UserdataModel userdataModel)
         {
             _userDataModels.Add(userdataModel);
-            SaveUserdataToJsonFile();
+            _ = SaveUserdataToJsonFile();
 
             return Task.CompletedTask;
         }

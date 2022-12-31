@@ -60,7 +60,7 @@ public class Operator
             if (target.Score < 0)
                 target.Score = 0;
         }
-        new Userdatalib.UserdataRepository(_userdataLocation).UpdateUserByName(target);
+        _ = new Userdatalib.UserdataRepository(_userdataLocation).UpdateUserByName(target);
 
         return Task.CompletedTask;
     }
