@@ -130,7 +130,7 @@ namespace Userdatalib
                     });
                 }
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"\n# ERROR: {ex.GetType()}: {ex.Message}\n");
             }
