@@ -4,20 +4,40 @@ namespace Userdatalib
 {
     public class UserdataRepository
     {
-        private List<UserdataModel> _userDataModels;
+        public List<UserdataModel> UserDataModels { get; private set; }
         private string _jsonFilePath;
 
         public UserdataRepository(string jsonFilePath)
         {
             _jsonFilePath = jsonFilePath;
-            _userDataModels = LoadUserdataFromJsonFileAsync().Result;
+            UserDataModels = LoadUserdataFromJsonFileAsync().Result;
         }
 
         // CREATE, POST
         public async Task CreateUserAsync(UserdataModel userdataModel)
         {
-            _userDataModels.Add(userdataModel);
+            UserDataModels.Add(userdataModel);
             await SaveUserdataToJsonFileAsync();
+        }
+
+        private Random _randomBigDataTest = new Random();
+        public async Task CreateVeryLargeExampleFileAsync()
+        {
+            Console.WriteLine("# DEBUG: BIG DATA EXAMPLE FILE CREATION STARTED...");
+            await Task.Run(() =>
+            {
+                for (int i = 0; i < 10_000_000; i++)
+                {
+                    UserDataModels.Add(new UserdataModel()
+                    {
+                        Name = $"BigDataUser_{i + 1}",
+                        Age = _randomBigDataTest.Next(1, 101),
+                        Score = _randomBigDataTest.Next(1, 10_000_001)
+                    });
+                }
+            });
+            await SaveUserdataToJsonFileAsync();
+            Console.WriteLine("# DEBUG: ALL TESTUSERS SUCCESSFULLY ADDED TO JSON FILE!");
         }
 
         // READ, GET
@@ -25,7 +45,7 @@ namespace Userdatalib
         {
             return Task.Run(() =>
             {
-                return _userDataModels;
+                return UserDataModels;
             });
         }
 
@@ -33,7 +53,7 @@ namespace Userdatalib
         {
             return Task.Run(() =>
             {
-                return _userDataModels.Any(e => e.Name == name) ? _userDataModels.FirstOrDefault(e => e.Name == name) : null;
+                return UserDataModels.Any(e => e.Name == name) ? UserDataModels.FirstOrDefault(e => e.Name == name) : null;
             });
         }
 
@@ -53,12 +73,19 @@ namespace Userdatalib
         }
 
         // DELETE, DELETE
+        public async Task DeleteAllUsersAsync()
+        {
+            UserDataModels.Clear();
+            await SaveUserdataToJsonFileAsync();
+            Console.WriteLine("# DEBUG: ALL DATA SUCCESSFULLY DELETED FROM JSON FILE!");
+        }
+
         public async Task DeleteUserByNameAsync(string name)
         {
             var userdataModel = await GetUserByName(name)!;
             if (userdataModel != null)
             {
-                _userDataModels.Remove(userdataModel);
+                UserDataModels.Remove(userdataModel);
                 await SaveUserdataToJsonFileAsync();
             }
         }
@@ -66,31 +93,46 @@ namespace Userdatalib
         // JSON HELPER
         private async Task<List<UserdataModel>> LoadUserdataFromJsonFileAsync()
         {
-            if (!File.Exists(_jsonFilePath))
-                throw new FileNotFoundException();
-
-            using (StreamReader file = File.OpenText(_jsonFilePath))
+            try
             {
-                var deserialized = await Task<object?>.Run(() =>
+                if (!File.Exists(_jsonFilePath))
+                    throw new FileNotFoundException();
+
+                using (StreamReader file = File.OpenText(_jsonFilePath))
                 {
-                    return new JsonSerializer().Deserialize(file, typeof(List<UserdataModel>));
-                });
+                    var deserialized = await Task<object?>.Run(() =>
+                    {
+                        return new JsonSerializer().Deserialize(file, typeof(List<UserdataModel>));
+                    });
 
-                if (deserialized is null)
-                    return new List<UserdataModel>();
+                    if (deserialized is null)
+                        return new List<UserdataModel>();
 
-                return (List<UserdataModel>)deserialized;
+                    return (List<UserdataModel>)deserialized;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\n# ERROR: {ex.GetType()}: {ex.Message}\n");
+                return new List<UserdataModel>();
             }
         }
 
         private async Task SaveUserdataToJsonFileAsync()
         {
-            using (StreamWriter file = File.CreateText(_jsonFilePath))
+            try
             {
-                await Task.Run(() =>
+                using (StreamWriter file = File.CreateText(_jsonFilePath))
                 {
-                    new JsonSerializer().Serialize(file, _userDataModels);
-                });
+                    await Task.Run(() =>
+                    {
+                        new JsonSerializer().Serialize(file, UserDataModels);
+                    });
+                }
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine($"\n# ERROR: {ex.GetType()}: {ex.Message}\n");
             }
         }
     }

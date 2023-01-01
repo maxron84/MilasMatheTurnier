@@ -24,15 +24,37 @@ Validator validator;
 var stringBuilder = new StringBuilder();
 var userEquation = 0.0;
 var equationPassed = false;
+var @operator = new Operator(userdataLocation, string.Empty);
 
 beginIntroduction:
 Console.WriteLine("# Gebe eine der folgenden Ziffern ein:\n\n# 1: Neues Spiel beginnen\n# 2: Bestenliste anzeigen\n# 3: Konsole aufräumen\n");
-userInput = Console.ReadLine()!;
+userInput = Console.ReadLine();
+// Delete everything
+if (userInput == "i am aware of all my data being deleted")
+{
+    Console.WriteLine("# DEBUG: ARE YOU SURE ???");
+    userInput = Console.ReadLine();
+    if (userInput == "YES")
+    {
+        Console.WriteLine("# DEBUG: BEGIN DELETING DATA FROM JSON FILE...");
+        await @operator.DeleteAllUsersAsync();
+        Console.WriteLine("# DEBUG: WRITE BIG TESTING DATA TO FILE ???");
+        userInput = Console.ReadLine();
+        if (userInput == "YES")
+            // Test the async handling of big data
+            await @operator.CreateExampleWithBigData();
+    }
+    goto beginIntroduction;
+}
 if (userInput != "1" && userInput != "2" && userInput != "3")
     goto beginIntroduction;
 if (userInput == "2")
 {
-    Console.Write(new Operator(userdataLocation, userName).GetAllUsersUserNameUserScoreAsync().Result);
+    Console.WriteLine("# Daten werden geladen...");
+    Console.WriteLine(await @operator.GetAllUsersUserNameUserScoreAsync());
+    await Task.Delay(1000);
+    await foreach (var result in @operator.GetEachUserDataModelReportAsync())
+        Console.WriteLine(result);
     goto beginIntroduction;
 }
 else if (userInput == "3")
@@ -68,6 +90,7 @@ if (userAge < 6)
 
 bonus = userSetupLookup.ContainsKey(userAge) ? userSetupLookup[userAge].bonus : bonusOpenEnd;
 malus = userSetupLookup.ContainsKey(userAge) ? userSetupLookup[userAge].malus : malusOpenEnd;
+@operator = new Operator(userdataLocation, userName);
 
 if (new Operator(userdataLocation, userName).IsUserAlreadyExisting(userName))
 {

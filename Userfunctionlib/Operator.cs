@@ -5,41 +5,39 @@ namespace Userfunctionlib;
 
 public class Operator
 {
+    public List<UserdataModel>? SortedData { get; private set; }
     private string _userdataLocation;
     private string _userName;
-    private StringBuilder _stringBuilder;
 
     public Operator(string userdataLocation, string userName)
     {
         _userdataLocation = userdataLocation;
         _userName = userName;
-        _stringBuilder = new();
     }
 
     // CONCRETE USE CASE OPERATIONS
     public async Task<string> GetAllUsersUserNameUserScoreAsync()
     {
         var data = await new Userdatalib.UserdataRepository(_userdataLocation).GetAllUsers();
-        var target = await Task<List<UserdataModel>>.Run(() =>
+        SortedData = await Task<List<UserdataModel>>.Run(() =>
         {
             return data
             .OrderByDescending(x => x.Score)
             .ToList();
         });
-        if (target.Count() < 1)
+        if (SortedData.Count() < 1)
             return "\n# Es sind noch keine Spieler eingetragen. Beginne jetzt mit einem neuen Spiel und sei der erste!\n\n";
-        _stringBuilder.Clear();
-        _stringBuilder.Append("# Die besten Spieler:\n\n");
-        for (int i = 0; i < target.Count(); i++)
-        {
-            _stringBuilder.Append($"# {i + 1}.) ");
-            _stringBuilder.Append($"Name: {target[i].Name} | ");
-            _stringBuilder.Append($"Alter: {target[i].Age} | ");
-            _stringBuilder.Append($"Punkte: {target[i].Score}\n");
-        }
-        _stringBuilder.Append("\n");
 
-        return _stringBuilder.ToString();
+        return string.Empty;
+    }
+
+    public async IAsyncEnumerable<string> GetEachUserDataModelReportAsync()
+    {
+        for (int i = 0; i < SortedData!.Count(); i++)
+        {
+            await Task.Delay(0);
+            yield return $"# {i + 1}.) Name: {SortedData![i].Name} | Alter: {SortedData[i].Age} | Punkte: {SortedData[i].Score}";
+        }
     }
 
     public bool IsUserAlreadyExisting(string userName)
@@ -97,6 +95,10 @@ public class Operator
 
         return Task.CompletedTask;
     }
+
+    public async Task CreateExampleWithBigData() => await new Userdatalib.UserdataRepository(_userdataLocation).CreateVeryLargeExampleFileAsync();
+
+    public async Task DeleteAllUsersAsync() => await new Userdatalib.UserdataRepository(_userdataLocation).DeleteAllUsersAsync();
 
     // HELPER
     private async Task<UserdataModel> GetUserdataModelByUserNameAsync(string userName)
