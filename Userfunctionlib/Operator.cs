@@ -1,13 +1,12 @@
-using System.Text;
 using Userdatalib;
 
 namespace Userfunctionlib;
 
 public class Operator
 {
-    public List<UserdataModel>? SortedData { get; private set; }
     private string _userdataLocation;
     private string _userName;
+    private List<UserdataModel>? _sortedData;
 
     public Operator(string userdataLocation, string userName)
     {
@@ -19,13 +18,13 @@ public class Operator
     public async Task<string> GetAllUsersUserNameUserScoreAsync()
     {
         var data = await new Userdatalib.UserdataRepository(_userdataLocation).GetAllUsers();
-        SortedData = await Task<List<UserdataModel>>.Run(() =>
+        _sortedData = await Task<List<UserdataModel>>.Run(() =>
         {
             return data
             .OrderByDescending(x => x.Score)
             .ToList();
         });
-        if (SortedData.Count() < 1)
+        if (_sortedData.Count() < 1)
             return "\n# Es sind noch keine Spieler eingetragen. Beginne jetzt mit einem neuen Spiel und sei der erste!\n\n";
 
         return string.Empty;
@@ -33,10 +32,10 @@ public class Operator
 
     public async IAsyncEnumerable<string> GetEachUserDataModelReportAsync()
     {
-        for (int i = 0; i < SortedData!.Count(); i++)
+        for (int i = 0; i < _sortedData!.Count(); i++)
         {
             await Task.Delay(0);
-            yield return $"# {i + 1}.) Name: {SortedData![i].Name} | Alter: {SortedData[i].Age} | Punkte: {SortedData[i].Score}";
+            yield return $"# {i + 1}.) Name: {_sortedData![i].Name} | Alter: {_sortedData[i].Age} | Punkte: {_sortedData[i].Score}";
         }
     }
 
