@@ -20,9 +20,9 @@ namespace Userdatalib
             await SaveUserdataToJsonFileAsync();
         }
 
-        private Random _randomBigDataTest = new Random();
         public async Task CreateVeryLargeExampleFileAsync()
         {
+            var random = new Random();
             Console.WriteLine("# DEBUG: BIG DATA EXAMPLE FILE CREATION STARTED...");
             await Task.Run(() =>
             {
@@ -31,8 +31,8 @@ namespace Userdatalib
                     UserDataModels.Add(new UserdataModel()
                     {
                         Name = $"BigDataUser_{i + 1}",
-                        Age = _randomBigDataTest.Next(1, 101),
-                        Score = _randomBigDataTest.Next(1, 10_000_001)
+                        Age = random.Next(1, 101),
+                        Score = random.Next(1, 10_000_001)
                     });
                 }
             });
