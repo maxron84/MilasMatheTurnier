@@ -52,9 +52,10 @@ if (userInput == "2")
 {
     Console.WriteLine("# Daten werden geladen...");
     Console.WriteLine(await @operator.GetAllUsersUserNameUserScoreAsync());
-    await Task.Delay(1000);
+    await Task.Delay(500);
     await foreach (var result in @operator.GetEachUserDataModelReportAsync())
         Console.WriteLine(result);
+    Console.WriteLine();
     goto beginIntroduction;
 }
 else if (userInput == "3")
@@ -92,9 +93,9 @@ bonus = userSetupLookup.ContainsKey(userAge) ? userSetupLookup[userAge].bonus : 
 malus = userSetupLookup.ContainsKey(userAge) ? userSetupLookup[userAge].malus : malusOpenEnd;
 @operator = new Operator(userdataLocation, userName);
 
-if (new Operator(userdataLocation, userName).IsUserAlreadyExisting(userName))
+if (@operator.IsUserAlreadyExisting(userName))
 {
-    var targetPassword = new Operator(userdataLocation, userName).GetUserPassword(userName);
+    var targetPassword = @operator.GetUserPassword(userName);
     if (!string.IsNullOrEmpty(targetPassword))
     {
     beginPasswordInputPrompt:
@@ -105,8 +106,8 @@ if (new Operator(userdataLocation, userName).IsUserAlreadyExisting(userName))
             goto beginPasswordInputPrompt;
         }
     }
-    _ = new Operator(userdataLocation, userName).UpdateUserAgeByUserName(userName, userAge);
-    userScore = new Operator(userdataLocation, userName).GetUserScoreByUserName(userName);
+    _ = @operator.UpdateUserAgeByUserName(userName, userAge);
+    userScore = @operator.GetUserScoreByUserName(userName);
     Console.WriteLine($"\n# Willkommen zurück, {userName}! Dein aktueller Punktestand lautet: {userScore}");
 }
 else
@@ -122,7 +123,7 @@ else
     }
     if (!string.IsNullOrEmpty(userInput))
         userPassword = userInput;
-    _ = new Operator(userdataLocation, userName).CreateNewUser(userName, userAge, userPassword);
+    _ = @operator.CreateNewUser(userName, userAge, userPassword);
     Console.WriteLine($"\n# Willkommen, {userName}! Du bist also {userAge} Jahre alt und beginnst daher mit dem Schwierigkeitsgrad {malus}. Viel Spaß!\n");
 }
 
@@ -148,7 +149,7 @@ while (true)
         goto beginOperationValidation;
     }
     Console.WriteLine(validator.GetUserInputValidationReport(Math.Round(userEquation, 2), ref equationPassed));
-    _ = new Operator(userdataLocation, userName).SetCurrentUserScoreByUserNameAsync(userName, bonus, malus, equationPassed);
+    _ = @operator.SetCurrentUserScoreByUserNameAsync(userName, bonus, malus, equationPassed);
     goto beginOperationValidation;
 }
 
