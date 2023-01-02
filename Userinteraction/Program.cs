@@ -36,7 +36,7 @@ if (userInput == "i am aware of all my data being deleted")
     userInput = Console.ReadLine();
     if (userInput == "YES")
     {
-        Console.WriteLine("# DEBUG: BEGIN DELETING DATA FROM JSON FILE:");
+        Console.WriteLine("# DEBUG: BEGIN DELETING DATA FROM JSON FILE");
         var deleteDataTask = Task.Run(async () => await @operator.DeleteAllUsersAsync());
         ReportTaskProgressToConsole(deleteDataTask, "DEBUG: DELETING DATA FROM JSON FILE", "DEBUG: ALL DATA SUCCESSFULLY DELETED FROM JSON FILE!");
         // Write many objects to Json-File to test the application with big data
@@ -44,9 +44,9 @@ if (userInput == "i am aware of all my data being deleted")
         userInput = Console.ReadLine();
         if (userInput == "YES")
         {
-            Console.WriteLine("# DEBUG: BEGIN WRITING TO JSON FILE:");
+            Console.WriteLine("# DEBUG: BEGIN WRITING TEST DATA TO JSON FILE");
             var createDataTask = Task.Run(async () => await @operator.CreateExampleWithBigData());
-            ReportTaskProgressToConsole(createDataTask, "DEBUG: WRITING DATA TO JSON FILE", "DEBUG: ALL DATA SUCCESSFULLY WRITTEN TO JSON FILE!");
+            ReportTaskProgressToConsole(createDataTask, "DEBUG: WRITING TEST DATA TO JSON FILE", "DEBUG: ALL TEST DATA SUCCESSFULLY WRITTEN TO JSON FILE!");
         }
     }
     goto beginIntroduction;
@@ -206,5 +206,5 @@ static void ReportTaskProgressToConsole(Task taskToBeReported, string reportingT
         RewriteLastLine("# " + reportingText + "...");
         Thread.Sleep(500);
     }
-    Console.WriteLine("# " + onIsCompletedText);
+    Console.WriteLine("# " + onIsCompletedText + "\n");
 }
