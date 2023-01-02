@@ -4,19 +4,19 @@ namespace Userdatalib
 {
     public class UserdataRepository
     {
-        public List<UserdataModel> UserDataModels { get; private set; }
         private string _jsonFilePath;
+        private List<UserdataModel> _userDataModels;
 
         public UserdataRepository(string jsonFilePath)
         {
             _jsonFilePath = jsonFilePath;
-            UserDataModels = LoadUserdataFromJsonFileAsync().Result;
+            _userDataModels = LoadUserdataFromJsonFileAsync().Result;
         }
 
         // CREATE, POST
         public async Task CreateUserAsync(UserdataModel userdataModel)
         {
-            UserDataModels.Add(userdataModel);
+            _userDataModels.Add(userdataModel);
             await SaveUserdataToJsonFileAsync();
         }
 
@@ -28,7 +28,7 @@ namespace Userdatalib
             {
                 for (int i = 0; i < 10_000_000; i++)
                 {
-                    UserDataModels.Add(new UserdataModel()
+                    _userDataModels.Add(new UserdataModel()
                     {
                         Name = $"BigDataUser_{i + 1}",
                         Age = random.Next(1, 101),
@@ -45,7 +45,7 @@ namespace Userdatalib
         {
             return Task.Run(() =>
             {
-                return UserDataModels;
+                return _userDataModels;
             });
         }
 
@@ -53,7 +53,7 @@ namespace Userdatalib
         {
             return Task.Run(() =>
             {
-                return UserDataModels.Any(e => e.Name == name) ? UserDataModels.FirstOrDefault(e => e.Name == name) : new UserdataModel();
+                return _userDataModels.Any(e => e.Name == name) ? _userDataModels.FirstOrDefault(e => e.Name == name) : new UserdataModel();
             });
         }
 
@@ -75,7 +75,7 @@ namespace Userdatalib
         // DELETE, DELETE
         public async Task DeleteAllUsersAsync()
         {
-            UserDataModels.Clear();
+            _userDataModels.Clear();
             await SaveUserdataToJsonFileAsync();
             Console.WriteLine("# DEBUG: ALL DATA SUCCESSFULLY DELETED FROM JSON FILE!");
         }
@@ -85,7 +85,7 @@ namespace Userdatalib
             var userdataModel = await GetUserByName(name)!;
             if (userdataModel != null)
             {
-                UserDataModels.Remove(userdataModel);
+                _userDataModels.Remove(userdataModel);
                 await SaveUserdataToJsonFileAsync();
             }
         }
@@ -126,7 +126,7 @@ namespace Userdatalib
                 {
                     await Task.Run(() =>
                     {
-                        new JsonSerializer().Serialize(file, UserDataModels);
+                        new JsonSerializer().Serialize(file, _userDataModels);
                     });
                 }
             }
