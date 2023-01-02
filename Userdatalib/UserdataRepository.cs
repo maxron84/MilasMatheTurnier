@@ -23,7 +23,6 @@ namespace Userdatalib
         public async Task CreateVeryLargeExampleFileAsync()
         {
             var random = new Random();
-            Console.WriteLine("# DEBUG: BIG DATA EXAMPLE FILE CREATION STARTED...");
             await Task.Run(() =>
             {
                 for (int i = 0; i < 10_000_000; i++)
@@ -37,7 +36,6 @@ namespace Userdatalib
                 }
             });
             await SaveUserdataToJsonFileAsync();
-            Console.WriteLine("# DEBUG: ALL TESTUSERS SUCCESSFULLY ADDED TO JSON FILE!");
         }
 
         // READ, GET
@@ -77,7 +75,6 @@ namespace Userdatalib
         {
             _userDataModels.Clear();
             await SaveUserdataToJsonFileAsync();
-            Console.WriteLine("# DEBUG: ALL DATA SUCCESSFULLY DELETED FROM JSON FILE!");
         }
 
         public async Task DeleteUserByNameAsync(string name)

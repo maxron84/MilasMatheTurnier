@@ -29,20 +29,25 @@ var @operator = new Operator(userdataLocation, string.Empty);
 beginIntroduction:
 Console.WriteLine("# Gebe eine der folgenden Ziffern ein:\n\n# 1: Neues Spiel beginnen\n# 2: Bestenliste anzeigen\n# 3: Konsole aufräumen\n");
 userInput = Console.ReadLine();
-// Delete everything
+// Delete everything from Json-File
 if (userInput == "i am aware of all my data being deleted")
 {
     Console.WriteLine("# DEBUG: ARE YOU SURE ???");
     userInput = Console.ReadLine();
     if (userInput == "YES")
     {
-        Console.WriteLine("# DEBUG: BEGIN DELETING DATA FROM JSON FILE...");
-        await @operator.DeleteAllUsersAsync();
-        Console.WriteLine("# DEBUG: WRITE BIG TESTING DATA TO FILE ???");
+        Console.WriteLine("# DEBUG: BEGIN DELETING DATA FROM JSON FILE:");
+        var deleteDataTask = Task.Run(async () => await @operator.DeleteAllUsersAsync());
+        ReportTaskProgressToConsole(deleteDataTask, "DEBUG: DELETING DATA FROM JSON FILE", "DEBUG: ALL DATA SUCCESSFULLY DELETED FROM JSON FILE!");
+        // Write many objects to Json-File to test the application with big data
+        Console.WriteLine("# DEBUG: WRITE VERY LARGE SET OF OBJECTS TO THE JSON-FILE FOR TESTING PURPOSES ???");
         userInput = Console.ReadLine();
         if (userInput == "YES")
-            // Test the async handling of big data
-            await @operator.CreateExampleWithBigData();
+        {
+            Console.WriteLine("# DEBUG: BEGIN WRITING TO JSON FILE:");
+            var createDataTask = Task.Run(async () => await @operator.CreateExampleWithBigData());
+            ReportTaskProgressToConsole(createDataTask, "DEBUG: WRITING DATA TO JSON FILE", "DEBUG: ALL DATA SUCCESSFULLY WRITTEN TO JSON FILE!");
+        }
     }
     goto beginIntroduction;
 }
@@ -50,8 +55,9 @@ if (userInput != "1" && userInput != "2" && userInput != "3")
     goto beginIntroduction;
 if (userInput == "2")
 {
-    Console.WriteLine("# Daten werden geladen...");
-    Console.WriteLine(await @operator.GetAllUsersSortedByUserScoreDescAsync());
+    var sortedUsersTask = Task.Run(async () => await @operator.GetAllUsersSortedByUserScoreDescAsync());
+    ReportTaskProgressToConsole(sortedUsersTask, "Daten werden geladen", string.Empty);
+    Console.WriteLine(sortedUsersTask.Result);
     await Task.Delay(500);
     await foreach (var result in @operator.GetEachUserdataModelReportAsync())
         Console.WriteLine(result);
@@ -176,11 +182,29 @@ static string GetPlaintextPasswordByMaskedInput()
 
     return password.ToString();
 }
-/*
-static void ClearLastLine()
+
+static void RewriteLastLine(string replacement)
 {
-    Console.SetCursorPosition(0, Console.CursorTop - 1);
+    int originalRow = Console.CursorTop;
+    int originalCol = Console.CursorLeft;
+
+    Console.SetCursorPosition(0, originalRow);
     Console.Write(new string(' ', Console.BufferWidth));
-    Console.SetCursorPosition(0, Console.CursorTop - 1);
+    Console.SetCursorPosition(0, originalRow);
+    Console.Write(replacement);
+    Console.SetCursorPosition(originalCol, originalRow);
 }
-*/
+
+static void ReportTaskProgressToConsole(Task taskToBeReported, string reportingText, string onIsCompletedText)
+{
+    while (!taskToBeReported.IsCompleted)
+    {
+        RewriteLastLine("# " + reportingText + ".");
+        Thread.Sleep(500);
+        RewriteLastLine("# " + reportingText + "..");
+        Thread.Sleep(500);
+        RewriteLastLine("# " + reportingText + "...");
+        Thread.Sleep(500);
+    }
+    Console.WriteLine("# " + onIsCompletedText);
+}
