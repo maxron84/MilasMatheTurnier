@@ -51,9 +51,9 @@ if (userInput != "1" && userInput != "2" && userInput != "3")
 if (userInput == "2")
 {
     Console.WriteLine("# Daten werden geladen...");
-    Console.WriteLine(await @operator.GetAllUsersUserNameUserScoreAsync());
+    Console.WriteLine(await @operator.GetAllUsersSortedByUserScoreDescAsync());
     await Task.Delay(500);
-    await foreach (var result in @operator.GetEachUserDataModelReportAsync())
+    await foreach (var result in @operator.GetEachUserdataModelReportAsync())
         Console.WriteLine(result);
     Console.WriteLine();
     goto beginIntroduction;
@@ -93,9 +93,9 @@ bonus = userSetupLookup.ContainsKey(userAge) ? userSetupLookup[userAge].bonus : 
 malus = userSetupLookup.ContainsKey(userAge) ? userSetupLookup[userAge].malus : malusOpenEnd;
 @operator = new Operator(userdataLocation, userName);
 
-if (@operator.IsUserAlreadyExisting(userName))
+if (@operator.IsUserAlreadyExistingAsync(userName).Result)
 {
-    var targetPassword = @operator.GetUserPassword(userName);
+    var targetPassword = @operator.GetUserPasswordAsync(userName).Result;
     if (!string.IsNullOrEmpty(targetPassword))
     {
     beginPasswordInputPrompt:
@@ -107,7 +107,7 @@ if (@operator.IsUserAlreadyExisting(userName))
         }
     }
     _ = @operator.UpdateUserAgeByUserName(userName, userAge);
-    userScore = @operator.GetUserScoreByUserName(userName);
+    userScore = @operator.GetUserScoreByUserNameAsync(userName).Result;
     Console.WriteLine($"\n# Willkommen zurück, {userName}! Dein aktueller Punktestand lautet: {userScore}");
 }
 else
@@ -123,7 +123,7 @@ else
     }
     if (!string.IsNullOrEmpty(userInput))
         userPassword = userInput;
-    _ = @operator.CreateNewUser(userName, userAge, userPassword);
+    _ = @operator.CreateNewUserAsync(userName, userAge, userPassword);
     Console.WriteLine($"\n# Willkommen, {userName}! Du bist also {userAge} Jahre alt und beginnst daher mit dem Schwierigkeitsgrad {malus}. Viel Spaß!\n");
 }
 
@@ -176,3 +176,11 @@ static string GetPlaintextPasswordByMaskedInput()
 
     return password.ToString();
 }
+/*
+static void ClearLastLine()
+{
+    Console.SetCursorPosition(0, Console.CursorTop - 1);
+    Console.Write(new string(' ', Console.BufferWidth));
+    Console.SetCursorPosition(0, Console.CursorTop - 1);
+}
+*/

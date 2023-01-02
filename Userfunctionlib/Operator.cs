@@ -15,7 +15,7 @@ public class Operator
     }
 
     // CONCRETE USE CASE OPERATIONS
-    public async Task<string> GetAllUsersUserNameUserScoreAsync()
+    public async Task<string> GetAllUsersSortedByUserScoreDescAsync()
     {
         var data = await new Userdatalib.UserdataRepository(_userdataLocation).GetAllUsers();
         _sortedData = await Task<List<UserdataModel>>.Run(() =>
@@ -30,25 +30,25 @@ public class Operator
         return string.Empty;
     }
 
-    public async IAsyncEnumerable<string> GetEachUserDataModelReportAsync()
+    public async IAsyncEnumerable<string> GetEachUserdataModelReportAsync()
     {
         for (int i = 0; i < _sortedData!.Count(); i++)
         {
-            await Task.Delay(0);
+            await Task.Delay(1);
             yield return $"# {i + 1}.) Name: {_sortedData![i].Name} | Alter: {_sortedData[i].Age} | Punkte: {_sortedData[i].Score}";
         }
     }
 
-    public bool IsUserAlreadyExisting(string userName)
+    public async Task<bool> IsUserAlreadyExistingAsync(string userName)
     {
-        var target = GetUserdataModelByUserNameAsync(userName.ToLower()).Result;
+        var target = await GetUserdataModelByUserNameAsync(userName.ToLower());
 
         return target.Name != null;
     }
 
-    public int GetUserScoreByUserName(string userName)
+    public async Task<int> GetUserScoreByUserNameAsync(string userName)
     {
-        var target = GetUserdataModelByUserNameAsync(userName.ToLower()).Result;
+        var target = await GetUserdataModelByUserNameAsync(userName.ToLower());
 
         return target.Name != null ? target.Score : -1;
     }
@@ -65,16 +65,16 @@ public class Operator
         await new Userdatalib.UserdataRepository(_userdataLocation).UpdateUserByNameAsync(target);
     }
 
-    public string? GetUserPassword(string userName)
+    public async Task<string?> GetUserPasswordAsync(string userName)
     {
-        var target = GetUserdataModelByUserNameAsync(userName.ToLower()).Result;
+        var target = await GetUserdataModelByUserNameAsync(userName.ToLower());
 
         return target.Password;
     }
 
-    public Task CreateNewUser(string userName, int userAge, string userPassword)
+    public async Task CreateNewUserAsync(string userName, int userAge, string userPassword)
     {
-        _ = new Userdatalib.UserdataRepository(_userdataLocation)
+        await new Userdatalib.UserdataRepository(_userdataLocation)
             .CreateUserAsync(new UserdataModel()
             {
                 Name = userName.ToLower(),
@@ -82,17 +82,13 @@ public class Operator
                 Score = 0,
                 Password = userPassword
             });
-
-        return Task.CompletedTask;
     }
 
-    public Task UpdateUserAgeByUserName(string userName, int userAge)
+    public async Task UpdateUserAgeByUserName(string userName, int userAge)
     {
         var target = GetUserdataModelByUserNameAsync(userName.ToLower()).Result;
         target.Age = userAge;
-        _ = new Userdatalib.UserdataRepository(_userdataLocation).UpdateUserByNameAsync(target);
-
-        return Task.CompletedTask;
+        await new Userdatalib.UserdataRepository(_userdataLocation).UpdateUserByNameAsync(target);
     }
 
     public async Task CreateExampleWithBigData() => await new Userdatalib.UserdataRepository(_userdataLocation).CreateVeryLargeExampleFileAsync();

@@ -53,7 +53,7 @@ namespace Userdatalib
         {
             return Task.Run(() =>
             {
-                return UserDataModels.Any(e => e.Name == name) ? UserDataModels.FirstOrDefault(e => e.Name == name) : null;
+                return UserDataModels.Any(e => e.Name == name) ? UserDataModels.FirstOrDefault(e => e.Name == name) : new UserdataModel();
             });
         }
 
