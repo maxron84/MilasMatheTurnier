@@ -16,20 +16,11 @@ public record UserdataModel
     private string? _password;
     public string? Password
     {
-        get
-        {
-            if (string.IsNullOrEmpty(_password))
-                return string.Empty;
-
-            return _password;
-        }
+        get => (string.IsNullOrEmpty(_password)) ? string.Empty : _password;
         set
         {
             var target = value ?? string.Empty;
-
-            if (string.IsNullOrEmpty(value) || target.Length < 3)
-                _password = string.Empty;
-            _password = target;
+            _password = (string.IsNullOrEmpty(value) || target.Length < 3) ? string.Empty : target;
         }
     }
 }
