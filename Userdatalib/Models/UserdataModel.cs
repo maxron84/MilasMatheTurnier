@@ -1,16 +1,14 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace Userdatalib;
+namespace Userdatalib.Models;
 
 public record UserdataModel
 {
-    [Required]
+    [JsonRequired]
     public string? Name { get; set; }
 
-    [Required]
+    [JsonRequired]
     public int Age { get; set; }
 
-    [Required]
+    [JsonRequired]
     public int Score { get; set; }
 
     private string? _password;
