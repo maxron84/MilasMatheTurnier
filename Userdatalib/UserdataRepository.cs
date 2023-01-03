@@ -73,7 +73,8 @@ namespace Userdatalib
         // DELETE, DELETE
         public async Task DeleteAllUsersAsync()
         {
-            _userDataModels.Clear();
+            if (_userDataModels.Count() > 0)
+                _userDataModels.Clear();
             await SaveUserdataToJsonFileAsync();
         }
 

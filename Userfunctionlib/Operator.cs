@@ -25,7 +25,7 @@ public class Operator
             .ToList();
         });
         if (_sortedData.Count() < 1)
-            return "\n# Es sind noch keine Spieler eingetragen. Beginne jetzt mit einem neuen Spiel und sei der erste!\n\n";
+            return "\n# Es sind noch keine Spieler eingetragen. Beginne jetzt mit einem neuen Spiel und sei der erste!\n";
 
         return string.Empty;
     }

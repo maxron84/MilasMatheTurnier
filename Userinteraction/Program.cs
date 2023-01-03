@@ -60,7 +60,7 @@ if (userInput == "2")
     var sortedUsersTask = Task.Run(async () => await @operator.GetAllUsersSortedByUserScoreDescAsync());
     ReportTaskProgressToConsole(sortedUsersTask, "Daten werden geladen", string.Empty);
     Console.WriteLine(sortedUsersTask.Result);
-    await Task.Delay(500);
+    Thread.Sleep(500);
     await foreach (var result in @operator.GetEachUserdataModelReportAsync())
         Console.WriteLine(result);
     Console.WriteLine();
@@ -164,6 +164,7 @@ while (true)
     goto beginOperationValidation;
 }
 
+// Helper
 static string GetPlaintextPasswordByMaskedInput()
 {
     var password = new StringBuilder();
@@ -213,5 +214,6 @@ static void ReportTaskProgressToConsole(Task taskToBeReported, string reportingT
         RewriteLineOnLastUsedVerticalPosition("# " + reportingText + "...");
         Thread.Sleep(500);
     }
-    Console.WriteLine("# " + onIsCompletedText + "\n");
+    if (!string.IsNullOrEmpty(onIsCompletedText))
+        Console.WriteLine("# " + onIsCompletedText + "\n");
 }
