@@ -5,5 +5,5 @@
 #### Specs
 ##### Database: Two separate one type .json-Files (Userprogressions, Application-Configurations)
 ##### Backend: Async operations on repositories & datamodels in plain C# (Now with decoupled structure for easier future updates!)
-##### Middlelayer: Calculations & userinputvalidations in plain C#
-##### Frontend: Simple console application in plain C#
+##### Middlelayer: Calculations & userinputvalidations in plain C#, also async where necessary
+##### Frontend: Simple console application: Classic procedural style in plain C#
