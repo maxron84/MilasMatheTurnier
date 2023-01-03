@@ -84,14 +84,14 @@ public class Operator
             });
     }
 
-    public async Task UpdateUserAgeByUserName(string userName, int userAge)
+    public async Task UpdateUserAgeByUserNameAsync(string userName, int userAge)
     {
         var target = GetUserdataModelByUserNameAsync(userName.ToLower()).Result;
         target.Age = userAge;
         await new Userdatalib.UserdataRepository(_userdataLocation).UpdateUserByNameAsync(target);
     }
 
-    public async Task CreateExampleWithBigData() => await new Userdatalib.UserdataRepository(_userdataLocation).CreateVeryLargeExampleFileAsync();
+    public async Task CreateExampleWithBigDataAsync() => await new Userdatalib.UserdataRepository(_userdataLocation).CreateVeryLargeExampleFileAsync();
 
     public async Task DeleteAllUsersAsync() => await new Userdatalib.UserdataRepository(_userdataLocation).DeleteAllUsersAsync();
 

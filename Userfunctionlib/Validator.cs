@@ -12,7 +12,8 @@ public class Validator
         { 6, (null, 21, -1, -1, 2, -1, false, false, true) },
         { 7, (null, 101, 11, -1, 3, 2, false, false, true) },
         { 8, (new List<double>() { 2 }, 1_001, 21, 101, 3, 2, false, false, true) },
-        { 9, (new List<double>() { 2, 3, 5 }, 100_001, 101, 1_001, 4, 2, true, false, false) }
+        { 9, (new List<double>() { 2, 3, 5 }, 100_001, 101, 1_001, 4, 2, true, false, true) },
+        { 0, (new List<double>() { 1 }, 100_001, 1_001, 10_001, 4, 2, true, false, false)}
     };
     private int _targetUserAge;
     private StringBuilder _stringBuilder = new();
@@ -20,7 +21,7 @@ public class Validator
 
     public Validator(int targetUserAge)
     {
-        _targetUserAge = targetUserAge < 9 ? targetUserAge : 9;
+        _targetUserAge = targetUserAge >= 6 && targetUserAge <= 9 ? targetUserAge : 0;
         _random = new();
         _operations = new();
         _numbers = new();
@@ -52,7 +53,7 @@ public class Validator
             return $"Dein Ergebnis ist leider falsch! :( Richtig wäre: {result}";
         }
         equationPassed = true;
-        
+
         return "Dein Ergebnis ist richtig! :)";
     }
 

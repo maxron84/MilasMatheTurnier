@@ -10,12 +10,14 @@ var bonus = 0;
 var bonusOpenEnd = 16;
 var malus = 0;
 var malusOpenEnd = 4;
+string add = "+", sub = "-", mul = "*", div = "/";
 var userSetupLookup = new Dictionary<int, (int bonus, int malus, List<string> allowedOperators)>
 {
-    { 6, (2, 1, new List<string> { "+", "-" }) },
-    { 7, (4, 1, new List<string> { "+", "-", "*" }) },
-    { 8, (8, 2, new List<string> { "+", "-", "*", "/" }) },
-    { 9, (bonusOpenEnd, malusOpenEnd, new List<string> { "+", "-", "*", "/" }) }
+    { 6, (2, 0, new List<string> { add, sub }) },
+    { 7, (4, 1, new List<string> { add, sub, mul }) },
+    { 8, (8, 2, new List<string> { add, sub, mul, div }) },
+    { 9, (12, 3, new List<string> { add, sub, mul, div }) },
+    { 0, (bonusOpenEnd, malusOpenEnd, new List<string> { add, sub, mul, div }) }
 };
 var outputFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? @".";
 var userdataLocation = Path.Combine(outputFolder, "Userdata.json");
@@ -45,7 +47,7 @@ if (userInput == "i am aware of all my data being deleted")
         if (userInput == "YES")
         {
             Console.WriteLine("# DEBUG: BEGIN WRITING TEST DATA TO JSON FILE");
-            var createDataTask = Task.Run(async () => await @operator.CreateExampleWithBigData());
+            var createDataTask = Task.Run(async () => await @operator.CreateExampleWithBigDataAsync());
             ReportTaskProgressToConsole(createDataTask, "DEBUG: WRITING TEST DATA TO JSON FILE", "DEBUG: ALL TEST DATA SUCCESSFULLY WRITTEN TO JSON FILE!");
         }
     }
@@ -95,8 +97,8 @@ if (userAge < 6)
     goto beginAgeValidation;
 }
 
-bonus = userSetupLookup.ContainsKey(userAge) ? userSetupLookup[userAge].bonus : bonusOpenEnd;
-malus = userSetupLookup.ContainsKey(userAge) ? userSetupLookup[userAge].malus : malusOpenEnd;
+bonus = userSetupLookup.ContainsKey(userAge) ? userSetupLookup[userAge].bonus : userSetupLookup[0].bonus;
+malus = userSetupLookup.ContainsKey(userAge) ? userSetupLookup[userAge].malus : userSetupLookup[0].malus;
 @operator = new Operator(userdataLocation, userName);
 
 if (@operator.IsUserAlreadyExistingAsync(userName).Result)
@@ -112,9 +114,10 @@ if (@operator.IsUserAlreadyExistingAsync(userName).Result)
             goto beginPasswordInputPrompt;
         }
     }
-    _ = @operator.UpdateUserAgeByUserName(userName, userAge);
+    _ = @operator.UpdateUserAgeByUserNameAsync(userName, userAge);
+    Thread.Sleep(100);
     userScore = @operator.GetUserScoreByUserNameAsync(userName).Result;
-    Console.WriteLine($"\n# Willkommen zurück, {userName}! Dein aktueller Punktestand lautet: {userScore}");
+    Console.WriteLine($"\n# Willkommen zurück, {userName}! Dein aktueller Punktestand lautet: {userScore}\n");
 }
 else
 {
@@ -132,14 +135,14 @@ else
     if (!string.IsNullOrEmpty(userInput))
         userPassword = userInput;
     _ = @operator.CreateNewUserAsync(userName, userAge, userPassword);
-    Console.WriteLine($"\n# Willkommen, {userName}! Du bist also {userAge} Jahre alt und beginnst daher mit dem Schwierigkeitsgrad {malus}. Viel Spaß!\n");
+    Console.WriteLine($"\n# Willkommen, {userName}! Du bist also {userAge} Jahre alt und beginnst daher mit dem Schwierigkeitsgrad {malus + 1}. Viel Spaß!\n");
 }
 
 beginOperationValidation:
 while (true)
 {
     validator = new(userAge);
-    var allowedOperatorsOutput = userAge < 9 ? userSetupLookup[userAge].allowedOperators : userSetupLookup[9].allowedOperators;
+    var allowedOperatorsOutput = userAge >= 6 && userAge <= 9 ? userSetupLookup[userAge].allowedOperators : userSetupLookup[0].allowedOperators;
     stringBuilder.Clear();
     allowedOperatorsOutput.ForEach(x => stringBuilder.Append(x + " "));
     Console.WriteLine($"# Wähle eine der {allowedOperatorsOutput.Count()} Grundrechenarten: {stringBuilder.ToString()}oder drücke ENTER zum beenden deiner Sitzung.");
@@ -185,7 +188,7 @@ static string GetPlaintextPasswordByMaskedInput()
     return password.ToString();
 }
 
-static void RewriteLastLine(string replacement)
+static void RewriteLineOnLastUsedVerticalPosition(string replacement)
 {
     int originalRow = Console.CursorTop;
     int originalCol = Console.CursorLeft;
@@ -201,11 +204,13 @@ static void ReportTaskProgressToConsole(Task taskToBeReported, string reportingT
 {
     while (!taskToBeReported.IsCompleted)
     {
-        RewriteLastLine("# " + reportingText + ".");
+        RewriteLineOnLastUsedVerticalPosition("# " + reportingText);
         Thread.Sleep(500);
-        RewriteLastLine("# " + reportingText + "..");
+        RewriteLineOnLastUsedVerticalPosition("# " + reportingText + ".");
         Thread.Sleep(500);
-        RewriteLastLine("# " + reportingText + "...");
+        RewriteLineOnLastUsedVerticalPosition("# " + reportingText + "..");
+        Thread.Sleep(500);
+        RewriteLineOnLastUsedVerticalPosition("# " + reportingText + "...");
         Thread.Sleep(500);
     }
     Console.WriteLine("# " + onIsCompletedText + "\n");
