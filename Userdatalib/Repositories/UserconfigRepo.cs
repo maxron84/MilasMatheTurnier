@@ -1,3 +1,5 @@
+using Userdatalib.Models;
+
 namespace Userdatalib.Repositories;
 
 public class UserconfigRepo : ARepositoryBase<UserconfigModel>
