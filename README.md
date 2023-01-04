@@ -1,6 +1,6 @@
 # MilasMatheTurnier
 
-## A TÄNNSCHN PLEASE! CURRENT STATUS BROKEN BECAUSE BACKEND IS ABOUT TO BE RESTRUCTURED!
+####  ~~CURRENT STATUS BROKEN BECAUSE BACKEND IS ABOUT TO BE RESTRUCTURED! ~~ DONE!
 
 ### Simple Konsolenapplikation mit Mathematikaufgaben für Grundschulkinder und darüber hinaus!
 ### Mit persistenter Bestenliste ohne jegliche Securitymaßnahmen ;-------)))
