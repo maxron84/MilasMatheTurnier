@@ -1,4 +1,4 @@
-namespace Userdatalib.Repositories;
+namespace Userdatalib.Repositories.Contracts;
 
 public interface IReflectable<T>
 {
