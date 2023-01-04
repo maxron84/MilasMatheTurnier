@@ -1,9 +1,13 @@
+using Userdatalib.Repositories.Contracts;
+
 namespace Userdatalib.Repositories;
 
-public abstract class ARepositoryBase<T> : IRepositible<T> where T : new()
+public abstract class ARepositoryBase<T> : IReportable, IRepositible<T> where T : new()
 {
     protected string? filePath;
     protected IList<T?>? models;
+    public Type? ExceptionType { get; protected set; }
+    public string? ExceptionMessage { get; protected set; }
 
     // GET, READ
     public Task<IList<T?>?> GetAllModels()
@@ -19,7 +23,11 @@ public abstract class ARepositoryBase<T> : IRepositible<T> where T : new()
         return Task.Run(() =>
         {
             if (models != null && models.Any())
-                return models.FirstOrDefault(x => typeof(T).GetProperty(propertyName)!.GetValue(x)!.Equals(propertyValue));
+                return models
+                    .FirstOrDefault(x => typeof(T)
+                    .GetProperty(propertyName)!
+                    .GetValue(x)!
+                    .Equals(propertyValue));
             return new T();
         });
     }
@@ -57,7 +65,7 @@ public abstract class ARepositoryBase<T> : IRepositible<T> where T : new()
     // DELETE, DELETE
     public async Task DeleteAllModelsAsync()
     {
-        if (models!.Count() > 0)
+        if (models!.Any())
             models!.Clear();
         await SaveToJsonFileAsync(filePath!, models!);
     }
@@ -109,7 +117,10 @@ public abstract class ARepositoryBase<T> : IRepositible<T> where T : new()
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"\n# {ex.GetType()}: {ex.Message}\n");
+            ExceptionType = ex.GetType();
+            ExceptionMessage = ex.Message;
+            OnExceptionThrown(EventArgs.Empty);
+
             return new List<T>();
         }
     }
@@ -128,7 +139,13 @@ public abstract class ARepositoryBase<T> : IRepositible<T> where T : new()
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"\n# {ex.GetType()}: {ex.Message}\n");
+            ExceptionType = ex.GetType();
+            ExceptionMessage = ex.Message;
+            OnExceptionThrown(EventArgs.Empty);
         }
     }
+
+    // EVENTS
+    public event EventHandler? ExceptionThrown = delegate { };
+    protected virtual void OnExceptionThrown(EventArgs e) => ExceptionThrown?.Invoke(this, e);
 }

@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Userdatalib.Models;
 using Userdatalib.Repositories;
 
@@ -8,17 +9,21 @@ public class Operator
     private string _userdataLocation;
     private string _userName;
     private List<UserdataModel?>? _sortedData;
+    private UserdataRepo _userdataRepo;
+    public string? ExceptionReporting { get; private set; }
 
     public Operator(string userdataLocation, string userName)
     {
         _userdataLocation = userdataLocation;
         _userName = userName;
+        _userdataRepo = new(userdataLocation);
+        _userdataRepo.ExceptionThrown += ExceptionThrown_EventHandler!;
     }
 
     // CONCRETE USE CASE OPERATIONS
     public async Task<string> GetAllUsersSortedByUserScoreDescAsync()
     {
-        var data = await new UserdataRepo(_userdataLocation).GetAllModels();
+        var data = await _userdataRepo.GetAllModels();
         _sortedData = await Task<List<UserdataModel>>.Run(() =>
         {
             return data!
@@ -62,7 +67,7 @@ public class Operator
             target.Score += equationPassed ? bonus : -malus;
             if (target.Score < 0)
                 target.Score = 0;
-            await new UserdataRepo(_userdataLocation).UpdateModelByPropertyAsync(GetObjectPropertiesLookup(target), nameof(target.Name), nameof(target.Score));
+            await _userdataRepo.UpdateModelByPropertyAsync(GetObjectPropertiesLookup(target), nameof(target.Name), nameof(target.Score));
         }
     }
 
@@ -75,7 +80,7 @@ public class Operator
 
     public async Task CreateNewUserAsync(string userName, int userAge, string userPassword)
     {
-        await new UserdataRepo(_userdataLocation)
+        await _userdataRepo
             .AddModelAsync(new UserdataModel()
             {
                 Name = userName.ToLower(),
@@ -91,7 +96,7 @@ public class Operator
         if (target.Name != null)
         {
             target.Age = userAge;
-            await new UserdataRepo(_userdataLocation).UpdateModelByPropertyAsync(GetObjectPropertiesLookup(target), nameof(target.Name), nameof(target.Age));
+            await _userdataRepo.UpdateModelByPropertyAsync(GetObjectPropertiesLookup(target), nameof(target.Name), nameof(target.Age));
         }
     }
 
@@ -109,18 +114,18 @@ public class Operator
                 { "Score", random.Next(1, maximum) }
             });
         }
-        await new UserdataRepo(_userdataLocation).AddSpecifiedRangeOfModelsAsync(propertiesCollection);
+        await _userdataRepo.AddSpecifiedRangeOfModelsAsync(propertiesCollection);
     }
 
     public async Task DeleteAllUsersAsync()
     {
-        await new UserdataRepo(_userdataLocation).DeleteAllModelsAsync();
+        await _userdataRepo.DeleteAllModelsAsync();
     }
 
     // HELPER
     private async Task<UserdataModel> GetUserdataModelByUserNameAsync(string userName)
     {
-        return await new UserdataRepo(_userdataLocation).GetModelByPropertyName("Name", userName.ToLower()) ?? new UserdataModel();
+        return await _userdataRepo.GetModelByPropertyName("Name", userName.ToLower()) ?? new UserdataModel();
     }
 
     private Dictionary<string, object> GetObjectPropertiesLookup(object target)
@@ -132,4 +137,14 @@ public class Operator
 
         return result;
     }
+
+    // EVENTS
+    public void ExceptionThrown_EventHandler(object sender, EventArgs e)
+    {
+        ExceptionReporting = $"\n# {_userdataRepo.ExceptionType}: {_userdataRepo.ExceptionMessage}\n";
+        OnExceptionReceived(new PropertyChangedEventArgs(nameof(ExceptionReporting)));
+    }
+
+    public event PropertyChangedEventHandler ExceptionReceived = delegate { };
+    protected virtual void OnExceptionReceived(PropertyChangedEventArgs e) => ExceptionReceived?.Invoke(this, e);
 }

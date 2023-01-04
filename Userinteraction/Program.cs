@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.ComponentModel;
+using System.Reflection;
 using System.Text;
 using Userfunctionlib;
 
@@ -11,7 +12,7 @@ var bonusOpenEnd = 16;
 var malus = 0;
 var malusOpenEnd = 4;
 string add = "+", sub = "-", mul = "*", div = "/";
-// Add configurable configfile (json), if no users then first user sets password to access the configfile, default password: start.123
+// Add configurable configfile (json), if no users then first user is adminuser
 var userSetupLookup = new Dictionary<int, (int bonus, int malus, List<string> allowedOperators)>
 {
     { 6, (2, 0, new List<string> { add, sub }) },
@@ -28,6 +29,7 @@ var stringBuilder = new StringBuilder();
 var userEquation = 0.0;
 var equationPassed = false;
 var @operator = new Operator(userdataLocation, string.Empty);
+@operator.ExceptionReceived += ExceptionReceived_EventHandler!;
 
 beginIntroduction:
 Console.WriteLine("# Gebe eine der folgenden Ziffern ein:\n\n# 1: Neues Spiel beginnen\n# 2: Bestenliste anzeigen\n# 3: Konsole aufräumen\n");
@@ -165,7 +167,7 @@ while (true)
     goto beginOperationValidation;
 }
 
-// Helper
+// HELPER
 static string GetPlaintextPasswordByMaskedInput()
 {
     var password = new StringBuilder();
@@ -217,4 +219,11 @@ static void ReportTaskProgressToConsole(Task taskToBeReported, string reportingT
     }
     if (!string.IsNullOrEmpty(onIsCompletedText))
         Console.WriteLine("# " + onIsCompletedText + "\n");
+}
+
+// EVENTS
+static void ExceptionReceived_EventHandler(object s, PropertyChangedEventArgs e)
+{
+    var instance = (Operator)s;
+    Console.WriteLine(instance.ExceptionReporting);
 }
