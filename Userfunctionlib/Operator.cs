@@ -25,7 +25,7 @@ public class Operator
             .OrderByDescending(x => x!.Score)
             .ToList();
         });
-        if (_sortedData.Count() < 1)
+        if (!_sortedData.Any())
             return "\n# Es sind noch keine Spieler eingetragen. Beginne jetzt mit einem neuen Spiel und sei der erste!\n";
 
         return string.Empty;
@@ -62,7 +62,7 @@ public class Operator
             target.Score += equationPassed ? bonus : -malus;
             if (target.Score < 0)
                 target.Score = 0;
-            await new UserdataRepo(_userdataLocation).UpdateModelByPropertyAsync(GetObjectPropertiesLookup(target), target.Name);
+            await new UserdataRepo(_userdataLocation).UpdateModelByPropertyAsync(GetObjectPropertiesLookup(target), nameof(target.Name), nameof(target.Score));
         }
     }
 
@@ -91,7 +91,7 @@ public class Operator
         if (target.Name != null)
         {
             target.Age = userAge;
-            await new UserdataRepo(_userdataLocation).UpdateModelByPropertyAsync(GetObjectPropertiesLookup(target), target.Name);
+            await new UserdataRepo(_userdataLocation).UpdateModelByPropertyAsync(GetObjectPropertiesLookup(target), nameof(target.Name), nameof(target.Age));
         }
     }
 
@@ -120,7 +120,7 @@ public class Operator
     // HELPER
     private async Task<UserdataModel> GetUserdataModelByUserNameAsync(string userName)
     {
-        return await new UserdataRepo(_userdataLocation).GetModelByProperty(userName.ToLower())! ?? new UserdataModel();
+        return await new UserdataRepo(_userdataLocation).GetModelByPropertyName("Name", userName.ToLower()) ?? new UserdataModel();
     }
 
     private Dictionary<string, object> GetObjectPropertiesLookup(object target)

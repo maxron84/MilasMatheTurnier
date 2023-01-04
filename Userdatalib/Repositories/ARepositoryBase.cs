@@ -14,12 +14,12 @@ public abstract class ARepositoryBase<T> : IRepositible<T> where T : new()
         });
     }
 
-    public Task<T?> GetModelByProperty(object property)
+    public Task<T?> GetModelByPropertyName(string propertyName, object propertyValue)
     {
         return Task.Run(() =>
         {
-            if (models!.Any(e => e!.GetType().GetProperty(nameof(property))!.GetValue(e, null) == property))
-                return models!.FirstOrDefault(e => e!.GetType().GetProperty(nameof(property))!.GetValue(e, null) == property);
+            if (models != null && models.Any())
+                return models.FirstOrDefault(x => typeof(T).GetProperty(propertyName)!.GetValue(x)!.Equals(propertyValue));
             return new T();
         });
     }
@@ -42,16 +42,14 @@ public abstract class ARepositoryBase<T> : IRepositible<T> where T : new()
     }
 
     // PUT, UPDATE
-    public async Task UpdateModelByPropertyAsync(Dictionary<string, object> properties, string targetProp)
+    public async Task UpdateModelByPropertyAsync(Dictionary<string, object> properties, string keyProperty, string targetProperty)
     {
-        var targetProperty = properties.FirstOrDefault().Key;
-        T? existingModel = await GetModelByProperty(targetProperty)!;
+        T? existingModel = await GetModelByPropertyName(keyProperty, properties[keyProperty]);
         if (existingModel != null)
         {
             PropertyInfo? prop = existingModel.GetType().GetProperty(targetProperty);
             if (prop != null && prop.CanWrite)
                 prop.SetValue(existingModel, properties[targetProperty], null);
-
             await SaveToJsonFileAsync(filePath!, models!);
         }
     }
@@ -64,9 +62,9 @@ public abstract class ARepositoryBase<T> : IRepositible<T> where T : new()
         await SaveToJsonFileAsync(filePath!, models!);
     }
 
-    public async Task DeleteModelByPropertyAsync(object property)
+    public async Task DeleteModelByPropertyAsync(string propertyName, object propertyValue)
     {
-        var model = await GetModelByProperty(property)!;
+        var model = await GetModelByPropertyName(propertyName, propertyValue);
         if (model != null)
         {
             models!.Remove(model);
@@ -77,7 +75,7 @@ public abstract class ARepositoryBase<T> : IRepositible<T> where T : new()
     // REPOSITORY HELPER
     public T GetReflectedModel(Dictionary<string, object> properties)
     {
-        T? model = (T?)Activator.CreateInstance(typeof(T?));
+        T model = (T)Activator.CreateInstance(typeof(T))!;
         foreach (var property in properties)
         {
             PropertyInfo? prop = model!.GetType().GetProperty(property.Key);
@@ -85,11 +83,11 @@ public abstract class ARepositoryBase<T> : IRepositible<T> where T : new()
                 prop.SetValue(model, property.Value, null);
         }
 
-        return model ?? new T();
+        return model;
     }
 
     // JSON FILE INTERACTIONS
-    public async Task<IList<T>> LoadFromJsonFileAsync(string jsonFilePath)
+    public async Task<List<T>> LoadFromJsonFileAsync(string jsonFilePath)
     {
         try
         {

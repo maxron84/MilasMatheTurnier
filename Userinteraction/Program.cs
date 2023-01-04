@@ -153,7 +153,7 @@ while (true)
     if (allowedOperatorsOutput.Any(x => userInput == x))
     {
         Console.Write(validator.GetUsertaskReport(userInput!));
-        while (!Double.TryParse(Console.ReadLine(), out userEquation))
+        while (!double.TryParse(Console.ReadLine(), out userEquation))
             Console.WriteLine("# Bitte nur Zahlen mit höchstens 2 gerundeten Nachkommastellen eingeben!");
     }
     else
