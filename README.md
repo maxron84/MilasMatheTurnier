@@ -1,5 +1,4 @@
 # MilasMatheTurnier
-#### Applicationculture is currently german only!
 
 ### Simple Konsolenapplikation mit Mathematikaufgaben für Grundschulkinder und darüber hinaus!
 ### Mit persistenter Bestenliste ohne jegliche Securitymaßnahmen ;-------)))
@@ -14,3 +13,5 @@
 #### Options for security regarding usercredentials and the database via utilizing SecureString type and the .NET Cryptography Library
 #### Other cool stuff like further constraint-options, timers, online interactions with specified usergroups, etc.
 #### Making use of the available libraries (like ASP.NET Core, Blazor Server app, EF Core, ...) to create a full blown architecture, maybe...!
+---
+#### Applicationculture is currently german only!
