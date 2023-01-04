@@ -1,4 +1,5 @@
-using Userdatalib;
+using Userdatalib.Models;
+using Userdatalib.Repositories;
 
 namespace Userfunctionlib;
 
@@ -6,7 +7,7 @@ public class Operator
 {
     private string _userdataLocation;
     private string _userName;
-    private List<UserdataModel>? _sortedData;
+    private List<UserdataModel?>? _sortedData;
 
     public Operator(string userdataLocation, string userName)
     {
@@ -17,11 +18,11 @@ public class Operator
     // CONCRETE USE CASE OPERATIONS
     public async Task<string> GetAllUsersSortedByUserScoreDescAsync()
     {
-        var data = await new Userdatalib.UserdataRepository(_userdataLocation).GetAllUsers();
+        var data = await new UserdataRepo(_userdataLocation).GetAllModels();
         _sortedData = await Task<List<UserdataModel>>.Run(() =>
         {
-            return data
-            .OrderByDescending(x => x.Score)
+            return data!
+            .OrderByDescending(x => x!.Score)
             .ToList();
         });
         if (_sortedData.Count() < 1)
@@ -35,7 +36,7 @@ public class Operator
         for (int i = 0; i < _sortedData!.Count(); i++)
         {
             await Task.Delay(1);
-            yield return $"# {i + 1}.) Name: {_sortedData![i].Name} | Alter: {_sortedData[i].Age} | Punkte: {_sortedData[i].Score}";
+            yield return $"# {i + 1}.) Name: {_sortedData![i]!.Name} | Alter: {_sortedData![i]!.Age} | Punkte: {_sortedData![i]!.Score}";
         }
     }
 
@@ -61,8 +62,8 @@ public class Operator
             target.Score += equationPassed ? bonus : -malus;
             if (target.Score < 0)
                 target.Score = 0;
+            await new UserdataRepo(_userdataLocation).UpdateModelByPropertyAsync(GetObjectPropertiesLookup(target), target.Name);
         }
-        await new Userdatalib.UserdataRepository(_userdataLocation).UpdateUserByNameAsync(target);
     }
 
     public async Task<string?> GetUserPasswordAsync(string userName)
@@ -74,8 +75,8 @@ public class Operator
 
     public async Task CreateNewUserAsync(string userName, int userAge, string userPassword)
     {
-        await new Userdatalib.UserdataRepository(_userdataLocation)
-            .CreateUserAsync(new UserdataModel()
+        await new UserdataRepo(_userdataLocation)
+            .AddModelAsync(new UserdataModel()
             {
                 Name = userName.ToLower(),
                 Age = userAge,
@@ -87,17 +88,48 @@ public class Operator
     public async Task UpdateUserAgeByUserNameAsync(string userName, int userAge)
     {
         var target = GetUserdataModelByUserNameAsync(userName.ToLower()).Result;
-        target.Age = userAge;
-        await new Userdatalib.UserdataRepository(_userdataLocation).UpdateUserByNameAsync(target);
+        if (target.Name != null)
+        {
+            target.Age = userAge;
+            await new UserdataRepo(_userdataLocation).UpdateModelByPropertyAsync(GetObjectPropertiesLookup(target), target.Name);
+        }
     }
 
-    public async Task CreateExampleWithBigDataAsync() => await new Userdatalib.UserdataRepository(_userdataLocation).CreateVeryLargeExampleFileAsync();
+    public async Task CreateExampleWithBigDataAsync()
+    {
+        var random = new Random();
+        var maximum = 10_000_000;
+        var propertiesCollection = new List<Dictionary<string, object>>();
+        for (int i = 0; i < maximum; i++)
+        {
+            propertiesCollection.Add(new Dictionary<string, object>
+            {
+                { "Name", $"Bigdatauser_{i}" },
+                { "Age", random.Next(1, maximum / 10_000 + 1) },
+                { "Score", random.Next(1, maximum) }
+            });
+        }
+        await new UserdataRepo(_userdataLocation).AddSpecifiedRangeOfModelsAsync(propertiesCollection);
+    }
 
-    public async Task DeleteAllUsersAsync() => await new Userdatalib.UserdataRepository(_userdataLocation).DeleteAllUsersAsync();
+    public async Task DeleteAllUsersAsync()
+    {
+        await new UserdataRepo(_userdataLocation).DeleteAllModelsAsync();
+    }
 
     // HELPER
     private async Task<UserdataModel> GetUserdataModelByUserNameAsync(string userName)
     {
-        return await new Userdatalib.UserdataRepository(_userdataLocation).GetUserByName(userName.ToLower())! ?? new UserdataModel();
+        return await new UserdataRepo(_userdataLocation).GetModelByProperty(userName.ToLower())! ?? new UserdataModel();
+    }
+
+    private Dictionary<string, object> GetObjectPropertiesLookup(object target)
+    {
+        Dictionary<string, object> result = new Dictionary<string, object>();
+        PropertyInfo[] properties = target.GetType().GetProperties();
+        foreach (PropertyInfo property in properties)
+            result.Add(property.Name, property.GetValue(target, null)!);
+
+        return result;
     }
 }

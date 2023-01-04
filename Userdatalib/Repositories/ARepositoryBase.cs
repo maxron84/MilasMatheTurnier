@@ -5,12 +5,12 @@ public abstract class ARepositoryBase<T> : IRepositible<T> where T : new()
     protected string? filePath;
     protected IList<T?>? models;
 
-    // GET
+    // GET, READ
     public Task<IList<T?>?> GetAllModels()
     {
         return Task.Run(() =>
         {
-            return models!;
+            return models;
         });
     }
 
@@ -24,24 +24,24 @@ public abstract class ARepositoryBase<T> : IRepositible<T> where T : new()
         });
     }
 
-    // POST
+    // POST, CREATE
     public async Task AddModelAsync(T model)
     {
         models!.Add(model);
         await SaveToJsonFileAsync(filePath!, models!);
     }
 
-    public async Task AddSpecifiedRangeOfModelsAsync(Dictionary<string, object> properties, int maximum)
+    public async Task AddSpecifiedRangeOfModelsAsync(IList<Dictionary<string, object>> propertiesCollection)
     {
         await Task.Run(() =>
         {
-            for (int i = 0; i < maximum; i++)
+            foreach (var properties in propertiesCollection)
                 models!.Add(GetReflectedModel(properties));
         });
         await SaveToJsonFileAsync(filePath!, models!);
     }
 
-    // PUT
+    // PUT, UPDATE
     public async Task UpdateModelByPropertyAsync(Dictionary<string, object> properties, string targetProp)
     {
         var targetProperty = properties.FirstOrDefault().Key;
@@ -56,7 +56,7 @@ public abstract class ARepositoryBase<T> : IRepositible<T> where T : new()
         }
     }
 
-    // DELETE
+    // DELETE, DELETE
     public async Task DeleteAllModelsAsync()
     {
         if (models!.Count() > 0)

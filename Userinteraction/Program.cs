@@ -11,6 +11,7 @@ var bonusOpenEnd = 16;
 var malus = 0;
 var malusOpenEnd = 4;
 string add = "+", sub = "-", mul = "*", div = "/";
+// Add configurable configfile (json), if no users then first user sets password to access the configfile, default password: start.123
 var userSetupLookup = new Dictionary<int, (int bonus, int malus, List<string> allowedOperators)>
 {
     { 6, (2, 0, new List<string> { add, sub }) },
@@ -20,7 +21,7 @@ var userSetupLookup = new Dictionary<int, (int bonus, int malus, List<string> al
     { 0, (bonusOpenEnd, malusOpenEnd, new List<string> { add, sub, mul, div }) }
 };
 var outputFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? @".";
-var userdataLocation = Path.Combine(outputFolder, "Userdata.json");
+var userdataLocation = Path.Combine(outputFolder, @"Data\Userdata.json");
 var userInput = string.Empty;
 Validator validator;
 var stringBuilder = new StringBuilder();

@@ -1,5 +1,3 @@
-using System.Numerics;
-
 namespace Userfunctionlib;
 
 public class Calculator<T> where T : INumber<T>
