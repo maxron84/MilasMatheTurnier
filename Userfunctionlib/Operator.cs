@@ -16,7 +16,7 @@ public class Operator
         _userdataLocation = userdataLocation;
         _userName = userName;
         _userdataRepo = new(userdataLocation);
-        _userdataRepo.ExceptionThrown += ExceptionThrown_EventHandler!;
+        _userdataRepo.ExceptionThrown += ExceptionThrown_EventHandler;
     }
 
     // CONCRETE USE CASE OPERATIONS
@@ -138,7 +138,7 @@ public class Operator
     }
 
     // EVENTS
-    public void ExceptionThrown_EventHandler(object sender, EventArgs e)
+    public void ExceptionThrown_EventHandler(object? sender, EventArgs e)
     {
         ExceptionReporting = $"\n# {_userdataRepo.ExceptionType}: {_userdataRepo.ExceptionMessage}\n";
         OnExceptionReceived(new PropertyChangedEventArgs(nameof(ExceptionReporting)));

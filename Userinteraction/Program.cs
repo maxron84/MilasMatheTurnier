@@ -29,7 +29,7 @@ var stringBuilder = new StringBuilder();
 var userEquation = 0.0;
 var equationPassed = false;
 var @operator = new Operator(userdataLocation, string.Empty);
-@operator.ExceptionReceived += ExceptionReceived_EventHandler!;
+@operator.ExceptionReceived += ExceptionReceived_EventHandler;
 
 beginIntroduction:
 Console.WriteLine("# Gebe eine der folgenden Ziffern ein:\n\n# 1: Neues Spiel beginnen\n# 2: Bestenliste anzeigen\n# 3: Konsole aufräumen\n");
@@ -222,8 +222,8 @@ static void ReportTaskProgressToConsole(Task taskToBeReported, string reportingT
 }
 
 // EVENTS
-static void ExceptionReceived_EventHandler(object sender, PropertyChangedEventArgs e)
+static void ExceptionReceived_EventHandler(object? sender, PropertyChangedEventArgs e)
 {
-    var instance = (Operator)sender;
-    Console.WriteLine(instance.ExceptionReporting);
+    var instance = (Operator?)sender;
+    Console.WriteLine(instance!.ExceptionReporting);
 }
