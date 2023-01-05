@@ -2,7 +2,7 @@ using Userdatalib.Repositories.Contracts;
 
 namespace Userdatalib.Repositories;
 
-public abstract class ARepositoryBase<T> : IReportable, IRepositible<T> where T : new()
+public abstract class ARepositoryBase<T> : IRepository<T> where T : new()
 {
     protected string? filePath;
     protected IList<T?>? models;
@@ -81,21 +81,21 @@ public abstract class ARepositoryBase<T> : IReportable, IRepositible<T> where T 
     }
 
     // REPOSITORY HELPER
-    public T GetReflectedModel(Dictionary<string, object> properties)
+    protected T GetReflectedModel(Dictionary<string, object> properties)
     {
         T model = (T)Activator.CreateInstance(typeof(T))!;
         foreach (var property in properties)
         {
-            PropertyInfo? prop = model!.GetType().GetProperty(property.Key);
-            if (prop != null && prop.CanWrite)
-                prop.SetValue(model, property.Value, null);
+            PropertyInfo? targetProperty = model!.GetType().GetProperty(property.Key);
+            if (targetProperty != null && targetProperty.CanWrite)
+                targetProperty.SetValue(model, property.Value, null);
         }
 
         return model;
     }
 
     // JSON FILE INTERACTIONS
-    public async Task<List<T>> LoadFromJsonFileAsync(string jsonFilePath)
+    protected async Task<List<T>> LoadFromJsonFileAsync(string jsonFilePath)
     {
         try
         {
@@ -125,7 +125,7 @@ public abstract class ARepositoryBase<T> : IReportable, IRepositible<T> where T 
         }
     }
 
-    public async Task SaveToJsonFileAsync(string jsonFilePath, IList<T> collectionToSave)
+    protected async Task SaveToJsonFileAsync(string jsonFilePath, IList<T> collectionToSave)
     {
         try
         {

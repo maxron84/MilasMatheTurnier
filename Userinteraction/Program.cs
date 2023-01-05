@@ -222,8 +222,8 @@ static void ReportTaskProgressToConsole(Task taskToBeReported, string reportingT
 }
 
 // EVENTS
-static void ExceptionReceived_EventHandler(object s, PropertyChangedEventArgs e)
+static void ExceptionReceived_EventHandler(object sender, PropertyChangedEventArgs e)
 {
-    var instance = (Operator)s;
+    var instance = (Operator)sender;
     Console.WriteLine(instance.ExceptionReporting);
 }
