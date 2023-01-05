@@ -10,7 +10,7 @@
 #### Frontend: Simple console application -> Classic procedural style in plain C#
 ---
 ### What's planned?
-#### Persistent Userconfigurations like constraints for each eage, etc. to be configured inside the application only through secured "kind-of-supervisor"-useraccount
+#### Persistent Userconfigurations like constraints for each eage, etc. to be configured inside the application, access only through not yet specified securitybarrier
 #### Options for security regarding usercredentials and the database via utilizing SecureString type and the .NET Cryptography Library
 ---
 #### Applicationculture is currently german only!
