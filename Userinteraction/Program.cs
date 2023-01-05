@@ -206,16 +206,14 @@ static void RewriteLineOnLastUsedVerticalPosition(string replacement)
 
 static void ReportTaskProgressToConsole(Task taskToBeReported, string reportingText, string onIsCompletedText)
 {
+    var dot = ".";
     while (!taskToBeReported.IsCompleted)
     {
-        RewriteLineOnLastUsedVerticalPosition("# " + reportingText);
-        Thread.Sleep(500);
-        RewriteLineOnLastUsedVerticalPosition("# " + reportingText + ".");
-        Thread.Sleep(500);
-        RewriteLineOnLastUsedVerticalPosition("# " + reportingText + "..");
-        Thread.Sleep(500);
-        RewriteLineOnLastUsedVerticalPosition("# " + reportingText + "...");
-        Thread.Sleep(500);
+        for (int i = 0; i < 4; i++)
+        {
+            RewriteLineOnLastUsedVerticalPosition("# " + reportingText + string.Join("", Enumerable.Repeat(dot, i)));
+            Thread.Sleep(500);
+        }
     }
     if (!string.IsNullOrEmpty(onIsCompletedText))
         Console.WriteLine("# " + onIsCompletedText + "\n");
