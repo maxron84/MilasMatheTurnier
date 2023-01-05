@@ -36,17 +36,17 @@ public abstract class ARepositoryBase<T> : IRepository<T> where T : new()
     public async Task AddModelAsync(T model)
     {
         models!.Add(model);
-        await SaveToJsonFileAsync(filePath!, models!);
+        await SaveToJsonFileAsync();
     }
 
-    public async Task AddSpecifiedRangeOfModelsAsync(IList<Dictionary<string, object>> propertiesCollection)
+    public async Task AddRangeOfModelsAsync(IList<Dictionary<string, object>> propertiesCollection)
     {
         await Task.Run(() =>
         {
             foreach (var properties in propertiesCollection)
                 models!.Add(GetReflectedModel(properties));
         });
-        await SaveToJsonFileAsync(filePath!, models!);
+        await SaveToJsonFileAsync();
     }
 
     // PUT, UPDATE
@@ -55,10 +55,10 @@ public abstract class ARepositoryBase<T> : IRepository<T> where T : new()
         T? existingModel = await GetModelByPropertyName(keyProperty, properties[keyProperty]);
         if (existingModel != null)
         {
-            PropertyInfo? prop = existingModel.GetType().GetProperty(targetProperty);
-            if (prop != null && prop.CanWrite)
-                prop.SetValue(existingModel, properties[targetProperty], null);
-            await SaveToJsonFileAsync(filePath!, models!);
+            PropertyInfo? modelProperty = existingModel.GetType().GetProperty(targetProperty);
+            if (modelProperty != null && modelProperty.CanWrite)
+                modelProperty.SetValue(existingModel, properties[targetProperty], null);
+            await SaveToJsonFileAsync();
         }
     }
 
@@ -67,7 +67,7 @@ public abstract class ARepositoryBase<T> : IRepository<T> where T : new()
     {
         if (models!.Any())
             models!.Clear();
-        await SaveToJsonFileAsync(filePath!, models!);
+        await SaveToJsonFileAsync();
     }
 
     public async Task DeleteModelByPropertyAsync(string propertyName, object propertyValue)
@@ -76,7 +76,7 @@ public abstract class ARepositoryBase<T> : IRepository<T> where T : new()
         if (model != null)
         {
             models!.Remove(model);
-            await SaveToJsonFileAsync(filePath!, models!);
+            await SaveToJsonFileAsync();
         }
     }
 
@@ -95,14 +95,14 @@ public abstract class ARepositoryBase<T> : IRepository<T> where T : new()
     }
 
     // JSON FILE INTERACTIONS
-    protected async Task<List<T>> LoadFromJsonFileAsync(string jsonFilePath)
+    protected async Task<List<T>> LoadFromJsonFileAsync()
     {
         try
         {
-            if (!File.Exists(jsonFilePath))
+            if (!File.Exists(filePath))
                 throw new FileNotFoundException();
 
-            using (StreamReader file = File.OpenText(jsonFilePath))
+            using (StreamReader file = File.OpenText(filePath))
             {
                 var deserialized = await Task<object?>.Run(() =>
                 {
@@ -125,15 +125,15 @@ public abstract class ARepositoryBase<T> : IRepository<T> where T : new()
         }
     }
 
-    protected async Task SaveToJsonFileAsync(string jsonFilePath, IList<T> collectionToSave)
+    protected async Task SaveToJsonFileAsync()
     {
         try
         {
-            using (StreamWriter file = File.CreateText(jsonFilePath))
+            using (StreamWriter file = File.CreateText(filePath!))
             {
                 await Task.Run(() =>
                 {
-                    new JsonSerializer().Serialize(file, collectionToSave);
+                    new JsonSerializer().Serialize(file, models);
                 });
             }
         }

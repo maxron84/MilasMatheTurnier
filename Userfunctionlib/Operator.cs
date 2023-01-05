@@ -113,7 +113,7 @@ public class Operator
                 { "Score", random.Next(1, maximum) }
             });
         }
-        await _userdataRepo.AddSpecifiedRangeOfModelsAsync(propertiesCollection);
+        await _userdataRepo.AddRangeOfModelsAsync(propertiesCollection);
     }
 
     public async Task DeleteAllUsersAsync()

@@ -8,7 +8,7 @@ public interface ICrudable<T>
 
     // POST, CREATE
     Task AddModelAsync(T model);
-    Task AddSpecifiedRangeOfModelsAsync(IList<Dictionary<string, object>> propertiesCollection);
+    Task AddRangeOfModelsAsync(IList<Dictionary<string, object>> propertiesCollection);
 
     // PUT, UPDATE
     Task UpdateModelByPropertyAsync(Dictionary<string, object> properties, string keyProperty, string targetProperty);
