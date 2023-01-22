@@ -12,5 +12,6 @@
 ### What's planned?
 #### Persistent Userconfigurations like constraints for each eage, etc. to be configured inside the application, access only through not yet specified securitybarrier
 #### Options for security regarding usercredentials and the database via utilizing SecureString type and the .NET Cryptography Library
+#### Logging to some kind of a logfile, e.g. using Serilog
 ---
 #### Applicationculture is currently german only!

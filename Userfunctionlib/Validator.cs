@@ -11,7 +11,7 @@ public class Validator
         { 7, (null, 101, 11, -1, 3, 2, false, false, true) },
         { 8, (new List<double>() { 2 }, 1_001, 21, 101, 3, 2, false, false, true) },
         { 9, (new List<double>() { 2, 3, 5 }, 100_001, 101, 1_001, 4, 2, true, false, true) },
-        { 0, (new List<double>() { 1 }, 100_001, 1_001, 10_001, 4, 2, true, false, false)}
+        { 0, (new List<double>() { 1 }, 100_001, 1_001, 10_001, 4, 2, true, false, false) }
     };
     private int _targetUserAge;
     private StringBuilder _stringBuilder = new();

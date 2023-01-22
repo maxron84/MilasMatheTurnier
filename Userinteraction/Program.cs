@@ -163,7 +163,7 @@ while (true)
         goto beginOperationValidation;
     }
     Console.WriteLine(validator.GetUserInputValidationReport(Math.Round(userEquation, 2), ref equationPassed));
-    _ = @operator.SetCurrentUserScoreByUserNameAsync(userName, bonus, malus, equationPassed);
+    _ = @operator.SetUserScoreByUserNameAsync(userName, bonus, malus, equationPassed);
     goto beginOperationValidation;
 }
 
