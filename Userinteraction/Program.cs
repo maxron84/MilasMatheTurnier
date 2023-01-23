@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Reflection;
 using System.Text;
 using Userfunctionlib;
 
@@ -21,8 +20,7 @@ var userSetupLookup = new Dictionary<int, (int bonus, int malus, List<string> al
     { 9, (12, 3, new List<string> { add, sub, mul, div }) },
     { 0, (bonusOpenEnd, malusOpenEnd, new List<string> { add, sub, mul, div }) }
 };
-var outputFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? @".";
-var userdataLocation = Path.Combine(outputFolder, @"Data\Userdata.json");
+var userdataLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Data\Userdata.json");
 var userInput = string.Empty;
 Validator validator;
 var stringBuilder = new StringBuilder();
