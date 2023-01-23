@@ -39,11 +39,12 @@ public class Operator
 
     public async IAsyncEnumerable<string> GetEachUserdataModelReportAsync()
     {
-        for (int i = 0; i < _sortedData!.Count(); i++)
-        {
-            await Task.Delay(1);
-            yield return $"# {i + 1}.) Name: {_sortedData![i]!.Name} | Alter: {_sortedData![i]!.Age} | Punkte: {_sortedData![i]!.Score}";
-        }
+        if (_sortedData != null)
+            for (int i = 0; i < _sortedData!.Count(); i++)
+            {
+                await Task.Delay(1);
+                yield return $"# {i + 1}.) Name: {_sortedData![i]!.Name} | Alter: {_sortedData![i]!.Age} | Punkte: {_sortedData![i]!.Score}";
+            }
     }
 
     public async Task<bool> IsUserAlreadyExistingAsync(string userName)
