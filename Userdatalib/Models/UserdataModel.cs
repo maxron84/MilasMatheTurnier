@@ -14,7 +14,7 @@ public record UserdataModel
     private string? _password;
     public string? Password
     {
-        get => (string.IsNullOrEmpty(_password)) ? string.Empty : _password;
+        get => string.IsNullOrEmpty(_password) ? string.Empty : _password;
         set => _password = (string.IsNullOrEmpty(value) || value.Length < 3) ? string.Empty : value;
     }
 }
