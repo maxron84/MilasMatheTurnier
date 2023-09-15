@@ -9,7 +9,7 @@
 #### Middlelayer: Calculations & userinputvalidations in plain C# -> Also async where I think it is necessary
 #### Frontend: Simple console application -> Classic procedural style in plain C#
 ---
-### What's planned?
+### Potential To-Do-List
 #### Persistent Userconfigurations like constraints for each eage, etc. to be configured inside the application, access only through not yet specified securitybarrier
 #### Options for security regarding usercredentials and the database via utilizing SecureString type and the .NET Cryptography Library
 #### Logging to some kind of a logfile, e.g. using Serilog
